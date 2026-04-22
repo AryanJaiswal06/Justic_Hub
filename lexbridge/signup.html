@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Account — LexBridge</title>
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/loginpage.css" />
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-visual">
+    <div class="auth-visual-bg"></div>
+    <div style="position:relative;z-index:1">
+      <a href="index.html" class="nav-logo" style="display:inline-flex;color:var(--text-primary)">
+        <div class="logo-icon">⚖</div>Justic<span style="color:var(--gold)">Hub</span>
+      </a>
+    </div>
+    <div class="auth-visual-content">
+      <p class="auth-visual-quote">"Access to <span>counsel</span> is the cornerstone of a just society."</p>
+      <p class="auth-visual-sub">Join thousands who found justice through JusticHub.</p>
+      <ul class="auth-features">
+        <li><div class="feat-icon">🆓</div>Free to register and explore</li>
+        <li><div class="feat-icon">✅</div>Verified lawyer profiles</li>
+        <li><div class="feat-icon">🔐</div>Encrypted messaging</li>
+        <li><div class="feat-icon">📊</div>Live case dashboard</li>
+        <li><div class="feat-icon">🏛</div>Pan-India legal coverage</li>
+      </ul>
+    </div>
+    <div class="auth-visual-footer">© 2025 JusticHub · Trusted Legal Platform</div>
+  </div>
+
+  <div class="auth-form-panel">
+    <div class="auth-form-wrap">
+      <div class="auth-form-header">
+        <div class="auth-logo"><div class="logo-icon">⚖</div>JusticHub</div>
+        <h2>Create Account</h2>
+        <p>Join India's premier legal platform</p>
+      </div>
+
+      <div class="signup-type-tabs">
+        <div class="signup-type-tab active" id="tabClient" onclick="switchType('client')">
+          <div class="tab-icon">👤</div><div class="tab-label">I need Legal Help</div>
+        </div>
+        <div class="signup-type-tab" id="tabLawyer" onclick="switchType('lawyer')">
+          <div class="tab-icon">⚖</div><div class="tab-label">I am a Lawyer</div>
+        </div>
+      </div>
+
+      <!-- Client form -->
+      <div class="form-section active" id="clientForm">
+        <form id="clientSignupForm" onsubmit="handleSignup(event,'client')">
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">First Name *</label><input type="text" class="form-input" name="first_name" placeholder="Ramesh" required /></div>
+            <div class="form-group"><label class="form-label">Last Name *</label><input type="text" class="form-input" name="last_name" placeholder="Gupta" required /></div>
+          </div>
+          <div class="form-group"><label class="form-label">Email *</label><input type="email" class="form-input" name="email" placeholder="you@example.com" required /></div>
+          <div class="form-group"><label class="form-label">Phone *</label><input type="tel" class="form-input" name="phone" placeholder="10-digit mobile number" pattern="[0-9]{10}" maxlength="10" required /></div>
+          <div class="form-group"><label class="form-label">City *</label>
+            <select class="form-select" name="city" required>
+              <option value="">Select your city</option>
+              <option>Delhi</option><option>Mumbai</option><option>Bangalore</option>
+              <option>Chennai</option><option>Hyderabad</option><option>Kolkata</option>
+              <option>Pune</option><option>Ahmedabad</option><option>Lucknow</option><option>Other</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Password * (min 8 chars)</label>
+            <div class="input-wrapper">
+              <input type="password" class="form-input" id="clientPass" name="password" placeholder="Minimum 8 characters" required minlength="8" />
+              <button type="button" class="input-toggle" onclick="togglePassword('clientPass',this)">👁</button>
+            </div>
+          </div>
+          <p class="terms-text">By creating an account you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</p>
+          <button type="submit" class="btn btn-primary btn-full btn-lg mt-2" id="clientBtn">Create Client Account →</button>
+        </form>
+      </div>
+
+      <!-- Lawyer form -->
+      <div class="form-section" id="lawyerForm">
+        <form id="lawyerSignupForm" onsubmit="handleSignup(event,'lawyer')">
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">First Name *</label><input type="text" class="form-input" name="first_name" placeholder="Priya" required /></div>
+            <div class="form-group"><label class="form-label">Last Name *</label><input type="text" class="form-input" name="last_name" placeholder="Sharma" required /></div>
+          </div>
+          <div class="form-group"><label class="form-label">Email *</label><input type="email" class="form-input" name="email" placeholder="advocate@example.com" required /></div>
+          <div class="form-group"><label class="form-label">Phone *</label><input type="tel" class="form-input" name="phone" placeholder="10-digit mobile number" pattern="[0-9]{10}" maxlength="10" required /></div>
+          <div class="form-group"><label class="form-label">Bar Council Registration No. *</label><input type="text" class="form-input" name="bar_council_no" placeholder="DL/2018/12345" required /></div>
+          <div class="form-group"><label class="form-label">Specialization *</label>
+            <select class="form-select" name="specialization" required>
+              <option value="">Select primary specialization</option>
+              <option>Criminal Law</option><option>Family Law</option><option>Corporate Law</option>
+              <option>Property Law</option><option>Civil Law</option><option>Labour Law</option>
+              <option>Intellectual Property</option><option>Tax Law</option><option>Constitutional Law</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Years of Experience</label><input type="number" class="form-input" name="experience_years" placeholder="5" min="0" max="60" /></div>
+            <div class="form-group"><label class="form-label">City *</label>
+              <select class="form-select" name="city" required>
+                <option value="">City</option>
+                <option>Delhi</option><option>Mumbai</option><option>Bangalore</option>
+                <option>Chennai</option><option>Hyderabad</option><option>Kolkata</option><option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group"><label class="form-label">Password * (min 8 chars)</label>
+            <div class="input-wrapper">
+              <input type="password" class="form-input" id="lawyerPass" name="password" placeholder="Minimum 8 characters" required minlength="8" />
+              <button type="button" class="input-toggle" onclick="togglePassword('lawyerPass',this)">👁</button>
+            </div>
+          </div>
+          <p class="terms-text">Your profile will be reviewed and verified within 48 hours.</p>
+          <button type="submit" class="btn btn-primary btn-full btn-lg mt-2" id="lawyerBtn">Register as Lawyer →</button>
+        </form>
+      </div>
+
+      <div class="auth-switch">Already have an account? <a href="login.html">Sign in →</a></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+<script src="scripts/db.js"></script>
+<script src="scripts/main.js"></script>
+<script>
+  function switchType(type) {
+    document.getElementById('tabClient').classList.toggle('active', type==='client');
+    document.getElementById('tabLawyer').classList.toggle('active', type==='lawyer');
+    document.getElementById('clientForm').classList.toggle('active', type==='client');
+    document.getElementById('lawyerForm').classList.toggle('active', type==='lawyer');
+  }
+
+  function showToast(msg, type='info') {
+    const c = document.getElementById('toastContainer');
+    const t = document.createElement('div');
+    t.className=`toast toast-${type}`; t.textContent=msg;
+    c.appendChild(t); setTimeout(()=>t.remove(), 3500);
+  }
+
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+  async function handleSignup(e, role) {
+    e.preventDefault();
+    const btnId = role==='client' ? 'clientBtn' : 'lawyerBtn';
+    const btn   = document.getElementById(btnId);
+    btn.textContent = 'Creating account…'; btn.disabled = true;
+
+    // Collect all form fields
+    const payload = { role };
+    new FormData(e.target).forEach((v,k) => { payload[k] = v; });
+    payload.full_name = `${payload.first_name||''} ${payload.last_name||''}`.trim();
+    payload.id        = uid();
+
+    // Try real backend
+    try {
+      const res  = await fetch('/api/auth/register', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        persistAndRedirect(payload, data.access_token, data.refresh_token, role);
+        return;
+      }
+      showToast(data.error || 'Registration failed.', 'error');
+
+    } catch (_) {
+      // No backend — save locally so login can verify credentials
+      const existing = localStorage.getItem(`lb_registered_${payload.email}`);
+      if (existing) {
+        showToast('An account with this email already exists. Please sign in.', 'error');
+        btn.textContent = role==='client'?'Create Client Account →':'Register as Lawyer →';
+        btn.disabled = false;
+        return;
+      }
+      // Store registration (password stored plaintext only in local-only mode)
+      localStorage.setItem(`lb_registered_${payload.email}`, JSON.stringify(payload));
+      persistAndRedirect(payload, 'local_'+Date.now(), '', role);
+    }
+
+    btn.textContent = role==='client'?'Create Client Account →':'Register as Lawyer →';
+    btn.disabled = false;
+  }
+
+  function persistAndRedirect(user, accessToken, refreshToken, role) {
+    // Persist session
+    localStorage.setItem('access_token',  accessToken || '');
+    localStorage.setItem('refresh_token', refreshToken || '');
+    localStorage.setItem('user_role',     role);
+    localStorage.setItem('user_id',       user.id);
+    localStorage.setItem('user_name',     user.full_name);
+    localStorage.setItem('user_email',    user.email);
+
+    // Write to the DB namespace so dashboards show real data immediately
+    DB.saveUser(user);
+
+    // For lawyers, pre-populate the lawyer profile
+    if (role === 'lawyer') {
+      DB.saveLawyerProfile({
+        full_name:        user.full_name,
+        specialization:   user.specialization || '',
+        bar_council_no:   user.bar_council_no || '',
+        experience_years: user.experience_years || '',
+        email:            user.email,
+        city:             user.city || '',
+      });
+    }
+
+    showToast('Account created successfully!', 'success');
+    setTimeout(() => {
+      window.location.href = role==='client' ? 'client_dashboard.html' : 'lawyer_dashboard.html';
+    }, 900);
+  }
+
+  function togglePassword(id, btn) {
+    const inp = document.getElementById(id);
+    if (inp.type==='password') {
+      inp.type='text'; btn.textContent='🙈';
+      setTimeout(()=>{ inp.type='password'; btn.textContent='👁'; }, 3000);
+    } else { inp.type='password'; btn.textContent='👁'; }
+  }
+
+  const urlType = new URLSearchParams(window.location.search).get('type');
+  if (urlType==='lawyer') switchType('lawyer');
+</script>
+</body>
+</html>

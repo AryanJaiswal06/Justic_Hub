@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lawyer Dashboard — JusticHub</title>
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/dashboard.css" />
+</head>
+<body>
+<div class="dash-layout">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand"><div class="logo-icon">⚖</div>Justic<span>Hub</span></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-label">Dashboard</div>
+        <a class="nav-item active" onclick="showTab('overview')"><span class="nav-icon">🏠</span>Overview</a>
+        <a class="nav-item" onclick="showTab('cases')"><span class="nav-icon">📋</span>Active Cases</a>
+        <a class="nav-item" onclick="showTab('opencases')"><span class="nav-icon">🔎</span>Open Cases</a>
+        <a class="nav-item" onclick="showTab('requests')"><span class="nav-icon">📨</span>Requests <span class="nav-badge" id="badgeRequests">0</span></a>
+        <a class="nav-item" onclick="showTab('messages')"><span class="nav-icon">💬</span>Messages</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Professional</div>
+        <a class="nav-item" onclick="showTab('profile')"><span class="nav-icon">👤</span>My Profile</a>
+        <a class="nav-item" onclick="showTab('documents')"><span class="nav-icon">📁</span>Documents</a>
+        <a class="nav-item" onclick="showTab('earnings')"><span class="nav-icon">💰</span>Earnings</a>
+        <a class="nav-item" onclick="showTab('ratings')"><span class="nav-icon">⭐</span>Ratings</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Account</div>
+        <a class="nav-item" onclick="showTab('settings')"><span class="nav-icon">⚙</span>Settings</a>
+        <a class="nav-item" href="#" onclick="logout()"><span class="nav-icon">🚪</span>Logout</a>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sidebarAvatar" style="background:linear-gradient(135deg,rgba(91,155,213,0.3),var(--gold-dim))">?</div>
+        <div class="user-info">
+          <div class="u-name" id="sidebarName">—</div>
+          <div class="u-role" id="sidebarSpec" style="color:var(--gold)">Lawyer</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="dash-main">
+    <header class="dash-topbar">
+      <div class="topbar-left">
+        <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+        <div>
+          <div class="topbar-title" id="pageTitle">Lawyer Dashboard</div>
+          <div class="topbar-breadcrumb">Legal Professional Portal</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div style="position:relative">
+          <button class="topbar-btn" onclick="toggleNotif()" id="notifBtn">🔔
+            <span class="topbar-notif-dot" id="notifDot" style="display:none"></span>
+          </button>
+          <div class="notif-dropdown" id="notifDropdown" style="display:none">
+            <div class="notif-header"><strong>Notifications</strong>
+              <a href="#" style="font-size:0.8rem;color:var(--gold)" onclick="markNotifsRead();return false">Mark all read</a>
+            </div>
+            <div id="notifList"></div>
+          </div>
+        </div>
+        <div class="user-avatar" id="topbarAvatar" style="background:linear-gradient(135deg,rgba(91,155,213,0.3),var(--gold-dim));cursor:pointer" onclick="showTab('settings')">?</div>
+      </div>
+    </header>
+
+    <div class="dash-content">
+
+      <!-- OVERVIEW -->
+      <div class="tab-content active" id="tab-overview">
+        <div class="dash-header">
+          <h1 id="greetingText">Welcome ⚖</h1>
+          <p>Your legal practice at a glance</p>
+        </div>
+        <div class="stats-row">
+          <div class="stat-card" style="--accent:var(--gold)"><div class="stat-icon">📋</div><div class="stat-num" id="statCases">0</div><div class="stat-label">Active Cases</div></div>
+          <div class="stat-card" style="--accent:var(--success)"><div class="stat-icon">✅</div><div class="stat-num" id="statResolved">0</div><div class="stat-label">Resolved</div></div>
+          <div class="stat-card" style="--accent:var(--info)"><div class="stat-icon">📁</div><div class="stat-num" id="statDocs">0</div><div class="stat-label">Documents</div></div>
+          <div class="stat-card" style="--accent:var(--gold)"><div class="stat-icon">💰</div><div class="stat-num" id="statEarnings">₹0</div><div class="stat-label">Total Earnings</div></div>
+        </div>
+        <div class="dash-grid dash-grid-main">
+          <div class="dash-panel">
+            <div class="panel-header"><span class="panel-title">Active Cases</span>
+              <button class="btn btn-outline btn-sm" onclick="showTab('cases')">View All</button>
+            </div>
+            <div class="panel-body" style="padding:0">
+              <table class="dash-table">
+                <thead><tr><th>Case</th><th>Client</th><th>Hearing</th><th>Status</th></tr></thead>
+                <tbody id="overviewCasesBody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div>
+            <div class="dash-panel" style="margin-bottom:1.5rem">
+              <div class="panel-header"><span class="panel-title">Quick Actions</span></div>
+              <div class="panel-body" style="display:flex;flex-direction:column;gap:0.75rem">
+                <button class="btn btn-outline btn-full" onclick="showTab('messages')">💬 Open Messages</button>
+                <button class="btn btn-outline btn-full" onclick="showTab('profile')">✏ Update Profile</button>
+                <button class="btn btn-outline btn-full" onclick="showTab('earnings')">💰 View Earnings</button>
+              </div>
+            </div>
+            <div class="dash-panel">
+              <div class="panel-header"><span class="panel-title">Activity Feed</span></div>
+              <div class="panel-body" style="padding:0.5rem 1rem">
+                <div id="activityList"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CLIENT REQUESTS (incoming + outgoing) -->
+      <div class="tab-content" id="tab-requests">
+        <div class="dash-header">
+          <h1>Client Requests</h1>
+          <p>Clients asking you to take their case + your outgoing interest in open cases</p>
+        </div>
+        <div class="dash-panel" style="margin-bottom:1rem">
+          <div class="panel-header"><span class="panel-title">Incoming — clients asking you</span>
+            <button class="btn btn-outline btn-sm" onclick="refreshRequests()">⟳ Refresh</button>
+          </div>
+          <div class="panel-body"><div id="incomingRequests">
+            <div style="text-align:center;padding:2rem;color:var(--text-muted)">Loading…</div>
+          </div></div>
+        </div>
+        <div class="dash-panel">
+          <div class="panel-header"><span class="panel-title">Outgoing — cases you expressed interest in</span></div>
+          <div class="panel-body"><div id="outgoingRequests">
+            <div style="text-align:center;padding:2rem;color:var(--text-muted)">Loading…</div>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- OPEN CASES BROWSER -->
+      <div class="tab-content" id="tab-opencases">
+        <div class="dash-header"><h1>Open Cases</h1><p>Browse cases awaiting representation and express your interest</p></div>
+        <div class="filters-bar">
+          <select class="form-select" id="openCaseTypeFilter" style="width:auto;padding:.4rem .8rem;font-size:.85rem" onchange="refreshOpenCases()">
+            <option value="">All Types</option>
+            <option>Criminal</option><option>Civil</option><option>Family</option>
+            <option>Property</option><option>Corporate</option><option>Labour</option>
+          </select>
+          <select class="form-select" id="openCasePriorityFilter" style="width:auto;padding:.4rem .8rem;font-size:.85rem" onchange="refreshOpenCases()">
+            <option value="">Any Priority</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+            <option value="urgent">Urgent</option>
+          </select>
+          <button class="btn btn-outline btn-sm" onclick="refreshOpenCases()">⟳ Refresh</button>
+        </div>
+        <div id="openCasesList" style="margin-top:1rem">
+          <div style="text-align:center;padding:2rem;color:var(--text-muted)">Loading…</div>
+        </div>
+      </div>
+
+      <!-- CASES -->
+      <div class="tab-content" id="tab-cases">
+        <div class="dash-header"><h1>Cases</h1><p>Manage your client cases</p></div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:1rem">
+          <button class="btn btn-primary" onclick="openAddCase()">+ Add Case</button>
+        </div>
+        <div id="lawyerCasesCards"></div>
+      </div>
+
+      <!-- MESSAGES -->
+      <div class="tab-content" id="tab-messages">
+        <div class="dash-header"><h1>Messages</h1><p>Communicate with your clients</p></div>
+        <div style="display:grid;grid-template-columns:280px 1fr;gap:1rem;height:520px">
+          <div class="dash-panel" style="overflow-y:auto;display:flex;flex-direction:column">
+            <div class="panel-header" style="padding:0.75rem 1rem"><span class="panel-title" style="font-size:0.9rem">Clients</span></div>
+            <div id="lawyerConversationList" style="flex:1;overflow-y:auto"></div>
+            <div style="padding:0.75rem;border-top:0.5px solid var(--border)">
+              <input type="text" class="form-input" id="newConvName" placeholder="Client name…" style="font-size:0.82rem;margin-bottom:0.5rem" />
+              <button class="btn btn-outline btn-full btn-sm" onclick="startNewConversation()">+ New Conversation</button>
+            </div>
+          </div>
+          <div class="dash-panel" style="display:flex;flex-direction:column">
+            <div class="panel-header">
+              <div><div class="panel-title" id="activeChatName">Select a conversation</div></div>
+            </div>
+            <div id="lawyerMessageList" style="flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:0.5rem"></div>
+            <div class="message-input-row">
+              <input type="text" class="form-input" id="lawyerMsgInput" placeholder="Type a message…" onkeydown="if(event.key==='Enter')sendMsg()" />
+              <button class="btn btn-primary" onclick="sendMsg()">Send</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROFILE -->
+      <div class="tab-content" id="tab-profile">
+        <div class="dash-header"><h1>My Profile</h1><p>Manage your professional listing</p></div>
+        <div class="dash-grid dash-grid-main">
+          <div class="dash-panel">
+            <div class="panel-header"><span class="panel-title">Profile Details</span></div>
+            <div class="panel-body">
+              <form onsubmit="saveProfile(event)">
+                <div class="form-group"><label class="form-label">Full Name</label><input type="text" class="form-input" id="profName" required /></div>
+                <div class="form-group"><label class="form-label">Specialization</label>
+                  <select class="form-select" id="profSpec">
+                    <option value="">Select</option>
+                    <option>Criminal Law</option><option>Family Law</option><option>Corporate Law</option>
+                    <option>Property Law</option><option>Civil Law</option><option>Labour Law</option>
+                    <option>Intellectual Property</option><option>Tax Law</option><option>Constitutional Law</option>
+                  </select>
+                </div>
+                <div class="form-group"><label class="form-label">About / Bio</label>
+                  <textarea class="form-textarea" id="profBio" style="min-height:100px" placeholder="Describe your experience and expertise…"></textarea>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label class="form-label">Consultation Fee (₹/hr)</label><input type="number" class="form-input" id="profFee" min="0" placeholder="5000" /></div>
+                  <div class="form-group"><label class="form-label">Per Hearing Fee (₹)</label><input type="number" class="form-input" id="profHearFee" min="0" placeholder="3000" /></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label class="form-label">Experience (years)</label><input type="number" class="form-input" id="profExp" min="0" max="60" placeholder="5" /></div>
+                  <div class="form-group"><label class="form-label">Bar Council No.</label><input type="text" class="form-input" id="profBar" placeholder="e.g. DL/2018/12345" /></div>
+                </div>
+                <div class="form-group"><label class="form-label">Languages</label><input type="text" class="form-input" id="profLangs" placeholder="e.g. English, Hindi" /></div>
+                <div class="form-group"><label class="form-label">Courts Practising In</label><input type="text" class="form-input" id="profCourts" placeholder="e.g. Delhi High Court" /></div>
+                <div class="form-group"><label class="form-label">Availability</label>
+                  <select class="form-select" id="profAvail">
+                    <option value="available">Available</option>
+                    <option value="busy">Busy</option>
+                    <option value="offline">Offline / On Leave</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-primary mt-2">Save Profile</button>
+              </form>
+            </div>
+          </div>
+          <div>
+            <div class="dash-panel">
+              <div class="panel-header"><span class="panel-title">Profile Stats</span></div>
+              <div class="panel-body">
+                <div class="hcard-row">Total Cases <span id="pStatCases">0</span></div>
+                <div class="hcard-row" style="margin-top:0.5rem">Total Earnings <span id="pStatEarnings">₹0</span></div>
+                <div class="hcard-row" style="margin-top:0.5rem">Documents <span id="pStatDocs">0</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DOCUMENTS -->
+      <div class="tab-content" id="tab-documents">
+        <div class="dash-header"><h1>Documents</h1><p>Case files and client submissions</p></div>
+        <div class="upload-area">
+          <input type="file" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" onchange="handleFileUpload(event)" />
+          <div class="upload-icon">📤</div>
+          <div class="upload-title">Upload case documents</div>
+          <div class="upload-sub">PDF, DOC, DOCX, JPG, PNG — Max 10 MB</div>
+        </div>
+        <div style="margin-top:1.5rem" id="lawyerDocsList"></div>
+      </div>
+
+      <!-- EARNINGS -->
+      <div class="tab-content" id="tab-earnings">
+        <div class="dash-header"><h1>Earnings</h1><p>Track your revenue and payments</p></div>
+        <div class="stats-row">
+          <div class="stat-card" style="--accent:var(--gold)"><div class="stat-icon">💰</div><div class="stat-num" id="earnTotal">₹0</div><div class="stat-label">Total Received</div></div>
+          <div class="stat-card" style="--accent:var(--gold)"><div class="stat-icon">⏳</div><div class="stat-num" id="earnPending">₹0</div><div class="stat-label">Pending</div></div>
+          <div class="stat-card" style="--accent:var(--info)"><div class="stat-icon">📄</div><div class="stat-num" id="earnCount">0</div><div class="stat-label">Payments</div></div>
+        </div>
+        <div class="dash-panel">
+          <div class="panel-header"><span class="panel-title">Payment Records</span>
+            <button class="btn btn-primary btn-sm" onclick="openAddEarning()">+ Add Payment</button>
+          </div>
+          <div class="panel-body" style="padding:0">
+            <table class="dash-table">
+              <thead><tr><th>Date</th><th>Client</th><th>Description</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+              <tbody id="earningsTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- RATINGS -->
+      <div class="tab-content" id="tab-ratings">
+        <div class="dash-header"><h1>Ratings &amp; Reviews</h1><p>Client feedback on your services</p></div>
+        <div class="dash-grid dash-grid-2" style="margin-bottom:1.5rem">
+          <div class="dash-panel text-center">
+            <div class="panel-body">
+              <div id="avgRatingDisplay" style="font-family:var(--font-heading);font-size:3.5rem;color:var(--gold)">—</div>
+              <div id="starsDisplay" style="font-size:1.5rem;letter-spacing:.1em;color:var(--gold)"></div>
+              <div id="ratingCount" style="color:var(--text-muted);font-size:.85rem;margin-top:.5rem">No reviews yet</div>
+            </div>
+          </div>
+          <div class="dash-panel"><div class="panel-body" id="ratingBars"></div></div>
+        </div>
+        <div id="reviewsList"></div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="tab-content" id="tab-settings">
+        <div class="dash-header"><h1>Settings</h1><p>Manage your account</p></div>
+        <div class="dash-panel" style="max-width:560px">
+          <div class="panel-header"><span class="panel-title">Account Settings</span></div>
+          <div class="panel-body">
+            <form onsubmit="saveSettings(event)">
+              <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="settEmail" required /></div>
+              <div class="form-group"><label class="form-label">Phone</label><input type="tel" class="form-input" id="settPhone" placeholder="+91 XXXXX XXXXX" /></div>
+              <div class="form-group"><label class="form-label">New Password</label><input type="password" class="form-input" id="settPass" placeholder="Leave blank to keep current" /></div>
+              <button type="submit" class="btn btn-primary mt-2">Save Changes</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Add Case Modal -->
+<div id="addCaseModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:999;align-items:center;justify-content:center">
+  <div class="dash-panel" style="width:480px;max-width:90vw;max-height:90vh;overflow-y:auto">
+    <div class="panel-header"><span class="panel-title">Add Case</span><button class="btn btn-outline btn-sm" onclick="closeAddCase()">✕</button></div>
+    <div class="panel-body">
+      <form id="addCaseForm" onsubmit="addCase(event)">
+        <div class="form-group"><label class="form-label">Case Title *</label><input type="text" class="form-input" name="title" required /></div>
+        <div class="form-group"><label class="form-label">Client Name *</label><input type="text" class="form-input" name="client_name" required /></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Case Type *</label>
+            <select class="form-select" name="case_type" required>
+              <option value="">Select</option>
+              <option>Criminal</option><option>Civil</option><option>Family</option>
+              <option>Property</option><option>Corporate</option><option>Labour</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Status</label>
+            <select class="form-select" name="status">
+              <option value="active">Active</option>
+              <option value="in_progress">In Progress</option>
+              <option value="pending">Pending</option>
+              <option value="closed">Closed</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Next Hearing Date</label><input type="date" class="form-input" name="next_hearing" /></div>
+        <div class="form-group"><label class="form-label">Notes</label><textarea class="form-textarea" name="description" placeholder="Case notes…" style="min-height:80px"></textarea></div>
+        <button type="submit" class="btn btn-primary btn-full mt-2">Save Case</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Add Earning Modal -->
+<div id="addEarnModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:999;align-items:center;justify-content:center">
+  <div class="dash-panel" style="width:400px;max-width:90vw">
+    <div class="panel-header"><span class="panel-title">Add Payment</span><button class="btn btn-outline btn-sm" onclick="closeAddEarning()">✕</button></div>
+    <div class="panel-body">
+      <form id="earnForm" onsubmit="addEarning(event)">
+        <div class="form-group"><label class="form-label">Client Name *</label><input type="text" class="form-input" name="client_name" required /></div>
+        <div class="form-group"><label class="form-label">Description *</label><input type="text" class="form-input" name="description" placeholder="e.g. Retainer fee" required /></div>
+        <div class="form-group"><label class="form-label">Amount (₹) *</label><input type="number" class="form-input" name="amount" min="1" required /></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-select" name="status">
+            <option value="completed">Received</option>
+            <option value="pending">Pending</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full mt-2">Save</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+<script src="scripts/db.js"></script>
+<script src="scripts/api.js"></script>
+<script src="scripts/main.js"></script>
+<script src="scripts/lawyer.js"></script>
+<script>
+// ── Auth guard ────────────────────────────────────────────────────────────────
+if (!localStorage.getItem('user_id') && !localStorage.getItem('access_token')) {
+  window.location.href = 'login.html';
+}
+
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
+function toggleNotif() {
+  const d = document.getElementById('notifDropdown');
+  d.style.display = d.style.display === 'none' ? 'block' : 'none';
+}
+function logout() {
+  ['access_token','refresh_token','user_role'].forEach(k=>localStorage.removeItem(k));
+  window.location.href = 'index.html';
+}
+function showToast(msg, type='info') {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = `toast toast-${type}`; t.textContent = msg;
+  c.appendChild(t); setTimeout(()=>t.remove(), 3500);
+}
+
+function showTab(name) {
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  document.getElementById('pageTitle').textContent = ({
+    overview:'Lawyer Dashboard', requests:'Client Requests', cases:'My Cases',
+    opencases:'Open Cases', messages:'Messages', profile:'My Profile',
+    documents:'Documents', earnings:'Earnings', ratings:'Ratings & Reviews', settings:'Settings'
+  })[name] || name;
+  if (name==='cases')     renderLawyerCases();
+  if (name==='messages')  renderConversations();
+  if (name==='documents') renderDocuments();
+  if (name==='earnings')  renderEarnings();
+  if (name==='profile')   loadProfile();
+  if (name==='settings')  loadSettings();
+  if (name==='ratings')   renderRatings();
+  if (name==='requests')  refreshRequests();
+  if (name==='opencases') refreshOpenCases();
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+function init() {
+  const lp   = DB.getLawyerProfile() || {};
+  const user = DB.getUser() || {};
+  const name = lp.full_name || user.full_name || localStorage.getItem('user_name') || '';
+  const ini  = name ? name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() : '?';
+  const hr   = new Date().getHours();
+  const gr   = hr<12?'Good Morning':hr<17?'Good Afternoon':'Good Evening';
+
+  document.getElementById('sidebarName').textContent   = name || '—';
+  document.getElementById('sidebarAvatar').textContent = ini;
+  document.getElementById('topbarAvatar').textContent  = ini;
+  document.getElementById('sidebarSpec').textContent   = lp.specialization || 'Lawyer';
+  document.getElementById('greetingText').textContent  = `${gr}, ${name.split(' ')[0]||'Advocate'} ⚖`;
+
+  renderStats();
+  renderOverviewCases();
+  renderActivityFeed();
+  renderNotifications();
+  // Prime the request badge from the backend
+  setTimeout(refreshRequests, 200);
+  // Refresh requests every 30 seconds for real-time updates
+  setInterval(refreshRequests, 30000);
+}
+
+// ── Stats ─────────────────────────────────────────────────────────────────────
+function renderStats() {
+  const cases    = _displayCases();
+  const docs     = DB.getDocuments();
+  const payments = DB.getPayments();
+  const active   = cases.filter(c=>['active','in_progress','pending'].includes(c.status)).length;
+  const resolved = cases.filter(c=>c.status==='closed').length;
+  const earned   = payments.filter(p=>p.status==='completed').reduce((s,p)=>s+Number(p.amount),0);
+
+  document.getElementById('statCases').textContent    = active;
+  document.getElementById('statResolved').textContent = resolved;
+  document.getElementById('statDocs').textContent     = docs.length;
+  document.getElementById('statEarnings').textContent = '₹'+earned.toLocaleString('en-IN');
+  document.getElementById('pStatCases').textContent   = cases.length;
+  document.getElementById('pStatEarnings').textContent= '₹'+earned.toLocaleString('en-IN');
+  document.getElementById('pStatDocs').textContent    = docs.length;
+}
+
+// ── Backend-fed case cache (refreshed on demand) ─────────────────────────────
+let _backendCases = null;
+
+async function fetchMyCasesFromBackend() {
+  try {
+    const res = await API.lawyer.myCases();
+    _backendCases = res.cases || [];
+    return _backendCases;
+  } catch (err) {
+    _backendCases = null;
+    return null;
+  }
+}
+
+function _displayCases() {
+  // Prefer the most recent backend pull; fall back to localStorage entries
+  return _backendCases !== null ? _backendCases : DB.getCases();
+}
+
+async function renderOverviewCases() {
+  // Trigger a backend refresh in the background
+  if (_backendCases === null) await fetchMyCasesFromBackend();
+  const cases = _displayCases().filter(c => c.status !== 'closed').slice(0, 5);
+  const tbody = document.getElementById('overviewCasesBody');
+  if (!tbody) return;
+  tbody.innerHTML = cases.length ? cases.map(c => `
+    <tr>
+      <td><strong>${esc(c.title)}</strong><br><small style="color:var(--text-muted)">${esc(c.case_number||'')}</small></td>
+      <td>${esc(c.client_name || '—')}</td>
+      <td>${c.next_hearing ? fmtDate(c.next_hearing) : '—'}</td>
+      <td><span class="badge badge-${sColor(c.status)}">${esc(c.status)}</span></td>
+    </tr>`).join('')
+  : `<tr><td colspan="4" style="text-align:center;padding:1.5rem;color:var(--text-muted)">No active cases yet. Cases assigned to you appear here.</td></tr>`;
+}
+
+// ── Cases ─────────────────────────────────────────────────────────────────────
+async function renderLawyerCases() {
+  await fetchMyCasesFromBackend();   // always pull fresh backend list
+  const cases = _displayCases();
+  const el    = document.getElementById('lawyerCasesCards');
+  if (!el) return;
+
+  if (!cases.length) {
+    el.innerHTML = `<div style="text-align:center;padding:3rem;color:var(--text-muted)">
+      <div style="font-size:2rem;margin-bottom:.75rem">📋</div>
+      <div style="font-weight:600;margin-bottom:.35rem">No cases yet</div>
+      <div style="font-size:.875rem">Browse <a href="#" onclick="showTab('opencases');return false">Open Cases</a> to express interest in unassigned matters, or wait for a client request in <a href="#" onclick="showTab('requests');return false">Requests</a>.</div>
+    </div>`;
+    return;
+  }
+
+  el.innerHTML = cases.map(c => {
+    const isBackend = !!c.id && Number.isInteger(c.id);
+    const statusOpts = ['active','in_progress','closed'].map(s =>
+      `<option value="${s}" ${c.status===s?'selected':''}>${s.replace('_',' ')}</option>`).join('');
+    return `
+    <div class="dash-panel" style="margin-bottom:1rem">
+      <div class="panel-body">
+        <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;align-items:flex-start">
+          <div>
+            <div style="font-weight:600;font-size:1rem">${esc(c.title)}</div>
+            <div style="font-size:0.78rem;color:var(--text-muted);margin-top:2px">
+              ${esc(c.case_number || '')} · ${esc(c.case_type || '')} · Client: ${esc(c.client_name || '—')}
+            </div>
+          </div>
+          <span class="badge badge-${sColor(c.status)}">${esc(c.status)}</span>
+        </div>
+        ${c.description ? `<p style="margin-top:0.6rem;font-size:0.875rem;color:var(--text-secondary)">${esc(c.description)}</p>` : ''}
+        <div style="margin-top:0.6rem;display:flex;gap:1.5rem;font-size:0.8rem;color:var(--text-muted);flex-wrap:wrap">
+          ${c.next_hearing ? `<span>📅 ${fmtDate(c.next_hearing)}</span>` : ''}
+          ${c.priority ? `<span>Priority: ${esc(c.priority)}</span>` : ''}
+        </div>
+        ${isBackend ? `
+        <div style="margin-top:0.75rem;display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
+          <label style="font-size:.78rem;color:var(--text-muted)">Update status:</label>
+          <select class="form-select" style="width:auto;font-size:0.8rem;padding:0.3rem 0.6rem" onchange="updateBackendCaseStatus(${c.id}, this.value)">
+            <option value="">— change —</option>
+            ${statusOpts}
+          </select>
+          ${c.status !== 'closed' ? `<button class="btn btn-outline btn-sm" onclick="closeBackendCase(${c.id})">✓ Mark as Closed</button>` : ''}
+        </div>` : `
+        <div style="margin-top:0.75rem">
+          <button class="btn btn-outline btn-sm" onclick="deleteCaseEntry('${c.id}')">🗑 Remove (local)</button>
+        </div>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Update a backend case status via /api/lawyer/cases/:id/update
+async function updateBackendCaseStatus(caseId, status) {
+  if (!status) return;
+  try {
+    await API.lawyer.addCaseUpdate(caseId, {
+      status: status,
+      content: 'Status changed to ' + status.replace('_',' ') + '.',
+      update_type: 'status_change',
+    });
+    showToast('Status updated', 'success');
+    await fetchMyCasesFromBackend();
+    renderLawyerCases(); renderStats(); renderOverviewCases();
+  } catch (err) {
+    showToast(err.message || 'Failed to update status', 'error');
+  }
+}
+
+// Close a backend case so the client can rate the lawyer
+async function closeBackendCase(caseId) {
+  if (!confirm('Mark this case as Closed? Your client will be able to rate you afterwards.')) return;
+  try {
+    await API.lawyer.closeCase(caseId);
+    showToast('Case closed — client can now rate you', 'success');
+    await fetchMyCasesFromBackend();
+    renderLawyerCases(); renderStats(); renderOverviewCases();
+  } catch (err) {
+    showToast(err.message || 'Failed to close case', 'error');
+  }
+}
+
+function openAddCase()  { document.getElementById('addCaseModal').style.display='flex'; }
+function closeAddCase() { document.getElementById('addCaseModal').style.display='none'; }
+
+function addCase(e) {
+  e.preventDefault();
+  const data = {}; new FormData(e.target).forEach((v,k)=>{ data[k]=v; });
+  DB.addCase(data); DB.addActivity(`Case added: ${data.title}`,'case');
+  e.target.reset(); closeAddCase(); renderLawyerCases(); renderStats(); renderOverviewCases(); renderActivityFeed();
+  showToast('Case added','success');
+}
+
+function changeCaseStatus(id, status) {
+  DB.updateCase(id, {status}); DB.addActivity(`Case status → "${status}"`,'case');
+  renderLawyerCases(); renderStats(); renderOverviewCases(); renderActivityFeed();
+  showToast('Status updated','success');
+}
+
+function deleteCaseEntry(id) {
+  if (!confirm('Delete this case?')) return;
+  DB.deleteCase(id); renderLawyerCases(); renderStats(); renderOverviewCases();
+  showToast('Deleted','info');
+}
+
+// ── Messages ──────────────────────────────────────────────────────────────────
+let activeConvId = null;
+
+function renderConversations() {
+  const convs = DB.getConversations();
+  const el    = document.getElementById('lawyerConversationList');
+  el.innerHTML = convs.length ? convs.map(c=>`
+    <div onclick="openConv('${c.id}','${esc(c.other_name)}')"
+      style="padding:0.75rem 1rem;cursor:pointer;border-bottom:0.5px solid var(--border);${activeConvId===c.id?'background:var(--bg-elevated)':''}">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-weight:500;font-size:0.88rem">${esc(c.other_name)}</span>
+        ${c.unread?`<span style="background:var(--gold);color:#000;font-size:0.7rem;border-radius:10px;padding:1px 7px">${c.unread}</span>`:''}
+      </div>
+      <div style="font-size:0.77rem;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px">${esc(c.last_msg||'No messages')}</div>
+    </div>`).join('')
+  : `<div style="padding:1rem;font-size:0.82rem;color:var(--text-muted)">No conversations yet.</div>`;
+}
+
+function openConv(id, name) {
+  activeConvId = id;
+  document.getElementById('activeChatName').textContent = name;
+  const msgs = DB.getMessages(id);
+  const el   = document.getElementById('lawyerMessageList');
+  el.innerHTML = msgs.length ? msgs.map(m=>`
+    <div style="display:flex;justify-content:${m.from_self?'flex-end':'flex-start'}">
+      <div style="max-width:72%;padding:0.55rem 0.9rem;border-radius:12px;font-size:0.875rem;
+        background:${m.from_self?'var(--gold)':'var(--bg-elevated)'};color:${m.from_self?'#000':'var(--text-primary)'}">
+        ${esc(m.content)}<div style="font-size:0.68rem;opacity:0.55;margin-top:3px;text-align:right">${fmtTime(m.sent_at)}</div>
+      </div>
+    </div>`).join('')
+  : `<div style="text-align:center;color:var(--text-muted);font-size:0.85rem;margin-top:2rem">Say hello!</div>`;
+  el.scrollTop = el.scrollHeight;
+  renderConversations();
+}
+
+function sendMsg() {
+  if (!activeConvId) { showToast('Select a conversation first','error'); return; }
+  const inp = document.getElementById('lawyerMsgInput');
+  const txt = inp.value.trim(); if (!txt) return;
+  DB.sendMessage(activeConvId, txt, true); inp.value='';
+  openConv(activeConvId, document.getElementById('activeChatName').textContent);
+}
+
+function startNewConversation() {
+  const inp  = document.getElementById('newConvName');
+  const name = inp.value.trim(); if (!name) { showToast('Enter client name','error'); return; }
+  const c    = DB.getOrCreateConversation(name); inp.value='';
+  openConv(c.id, name); renderConversations();
+}
+
+// ── Documents ─────────────────────────────────────────────────────────────────
+const ALLOWED_TYPES = ['application/pdf','application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document','image/jpeg','image/png'];
+
+function handleFileUpload(e) {
+  let count=0;
+  for (const f of e.target.files) {
+    if (!ALLOWED_TYPES.includes(f.type)) { showToast(`${f.name}: unsupported`,'error'); continue; }
+    if (f.size>10*1024*1024) { showToast(`${f.name}: too large`,'error'); continue; }
+    DB.addDocument({original_name:f.name,mime_type:f.type,file_size_bytes:f.size}); count++;
+  }
+  e.target.value='';
+  if (count) { renderDocuments(); renderStats(); showToast(`${count} file(s) saved`,'success'); }
+}
+
+function renderDocuments() {
+  const docs = DB.getDocuments();
+  const el   = document.getElementById('lawyerDocsList');
+  if (!docs.length) { el.innerHTML=`<div style="text-align:center;padding:2rem;color:var(--text-muted)">No documents yet.</div>`; return; }
+  el.innerHTML = `<div class="dash-panel"><div class="panel-body" style="padding:0">
+    <table class="dash-table"><thead><tr><th>Name</th><th>Type</th><th>Size</th><th>Uploaded</th><th></th></tr></thead>
+    <tbody>${docs.map(d=>`<tr>
+      <td>📄 ${esc(d.original_name)}</td>
+      <td>${esc((d.mime_type||'').split('/')[1]||'').toUpperCase()}</td>
+      <td>${(d.file_size_bytes/1024).toFixed(1)} KB</td>
+      <td>${fmtDate(d.uploaded_at)}</td>
+      <td><button class="btn btn-outline btn-sm" onclick="deleteDocEntry('${d.id}')">🗑</button></td>
+    </tr>`).join('')}</tbody></table></div></div>`;
+}
+
+function deleteDocEntry(id) { DB.deleteDocument(id); renderDocuments(); renderStats(); }
+
+// ── Earnings ──────────────────────────────────────────────────────────────────
+function renderEarnings() {
+  const p = DB.getPayments();
+  const received = p.filter(x=>x.status==='completed').reduce((s,x)=>s+Number(x.amount),0);
+  const pending  = p.filter(x=>x.status==='pending').reduce((s,x)=>s+Number(x.amount),0);
+  document.getElementById('earnTotal').textContent   = '₹'+received.toLocaleString('en-IN');
+  document.getElementById('earnPending').textContent = '₹'+pending.toLocaleString('en-IN');
+  document.getElementById('earnCount').textContent   = p.length;
+  const tbody = document.getElementById('earningsTable');
+  tbody.innerHTML = p.length ? p.map(x=>`
+    <tr>
+      <td>${fmtDate(x.created_at)}</td>
+      <td>${esc(x.client_name||'—')}</td>
+      <td>${esc(x.description)}</td>
+      <td>₹${Number(x.amount).toLocaleString('en-IN')}</td>
+      <td><span class="badge badge-${x.status==='completed'?'success':'gold'}">${x.status==='completed'?'Received':'Pending'}</span></td>
+      <td><button class="btn btn-outline btn-sm" onclick="deleteEarning('${x.id}')">🗑</button></td>
+    </tr>`).join('')
+  : `<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--text-muted)">No payments recorded yet.</td></tr>`;
+}
+
+function openAddEarning()  { document.getElementById('addEarnModal').style.display='flex'; }
+function closeAddEarning() { document.getElementById('addEarnModal').style.display='none'; }
+
+function addEarning(e) {
+  e.preventDefault();
+  const data = {}; new FormData(e.target).forEach((v,k)=>{ data[k]=v; });
+  DB.addPayment(data); e.target.reset(); closeAddEarning(); renderEarnings(); renderStats();
+  showToast('Payment recorded','success');
+}
+
+function deleteEarning(id) {
+  const uid = localStorage.getItem('user_id')||'guest';
+  const key = `lb_${uid}_payments`;
+  localStorage.setItem(key, JSON.stringify(JSON.parse(localStorage.getItem(key)||'[]').filter(x=>x.id!==id)));
+  renderEarnings(); renderStats();
+}
+
+// ── Profile ───────────────────────────────────────────────────────────────────
+async function loadProfile() {
+  // Try the backend first so per_hearing_fee, fees, etc. always show the live data
+  let user = null, lp = null;
+  try {
+    const res = await API.lawyer.profile();
+    user = res.user || null;
+    lp   = (user && user.lawyer_profile) || {};
+  } catch (err) {
+    user = DB.getUser() || {};
+    lp   = DB.getLawyerProfile() || {};
+  }
+
+  // Populate form
+  document.getElementById('profName').value     = (user && user.full_name) || lp.full_name || '';
+  document.getElementById('profBio').value      = lp.bio || '';
+  document.getElementById('profFee').value      = lp.consultation_fee != null ? lp.consultation_fee : '';
+  document.getElementById('profHearFee').value  = lp.per_hearing_fee  != null ? lp.per_hearing_fee  : '';
+  document.getElementById('profExp').value      = lp.experience_years != null ? lp.experience_years : '';
+  document.getElementById('profBar').value      = lp.bar_council_no   || '';
+  document.getElementById('profAvail').value    = lp.availability_status || 'available';
+
+  // Specialization may come back as a JSON array from the backend
+  const specs = Array.isArray(lp.specializations) ? lp.specializations
+                : (lp.specialization ? [lp.specialization] : []);
+  document.getElementById('profSpec').value = specs[0] || '';
+
+  // Languages / courts: backend stores as JSON arrays, fallback stores as comma string
+  document.getElementById('profLangs').value  = Array.isArray(lp.languages)
+    ? lp.languages.join(', ') : (lp.languages || '');
+  document.getElementById('profCourts').value = Array.isArray(lp.court_levels)
+    ? lp.court_levels.join(', ') : (lp.courts || '');
+}
+
+async function saveProfile(e) {
+  e.preventDefault();
+
+  const fullName       = document.getElementById('profName').value.trim();
+  const specVal        = document.getElementById('profSpec').value;
+  const bio            = document.getElementById('profBio').value.trim();
+  const fee            = document.getElementById('profFee').value;
+  const hearFee        = document.getElementById('profHearFee').value;
+  const exp            = document.getElementById('profExp').value;
+  const langsRaw       = document.getElementById('profLangs').value.trim();
+  const courtsRaw      = document.getElementById('profCourts').value.trim();
+  const bar            = document.getElementById('profBar').value.trim();
+  const avail          = document.getElementById('profAvail').value;
+
+  const payload = {
+    full_name:           fullName,
+    bio:                 bio,
+    consultation_fee:    fee,
+    per_hearing_fee:     hearFee,
+    experience_years:    exp,
+    bar_council_no:      bar,
+    availability_status: avail,
+    specializations:     specVal ? [specVal] : [],
+    languages:           langsRaw  ? langsRaw.split(',').map(s => s.trim()).filter(Boolean) : [],
+    court_levels:        courtsRaw ? courtsRaw.split(',').map(s => s.trim()).filter(Boolean) : [],
+  };
+
+  // Persist to backend (graceful offline fallback)
+  try {
+    await API.lawyer.updateProfile(payload);
+    showToast('Profile saved!', 'success');
+  } catch (err) {
+    showToast(err.message || 'Saved locally — backend unreachable', 'info');
+  }
+
+  // Always mirror to localStorage so offline mode keeps working
+  DB.saveLawyerProfile({
+    full_name:           fullName,
+    specialization:      specVal,
+    bio:                 bio,
+    consultation_fee:    fee,
+    per_hearing_fee:     hearFee,
+    experience_years:    exp,
+    languages:           langsRaw,
+    courts:              courtsRaw,
+    bar_council_no:      bar,
+    availability_status: avail,
+  });
+
+  const ini = fullName ? fullName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() : '?';
+  document.getElementById('sidebarName').textContent   = fullName || '—';
+  document.getElementById('sidebarSpec').textContent   = specVal || 'Lawyer';
+  document.getElementById('sidebarAvatar').textContent = ini;
+  document.getElementById('topbarAvatar').textContent  = ini;
+  document.getElementById('greetingText').textContent  = `Hello, ${fullName.split(' ')[0] || 'Advocate'} ⚖`;
+}
+
+// ── Settings ──────────────────────────────────────────────────────────────────
+function loadSettings() {
+  const u = DB.getUser() || {};
+  document.getElementById('settEmail').value = u.email || '';
+  document.getElementById('settPhone').value = u.phone || '';
+}
+
+function saveSettings(e) {
+  e.preventDefault();
+  const u = DB.getUser() || {};
+  DB.saveUser({ ...u,
+    email: document.getElementById('settEmail').value.trim(),
+    phone: document.getElementById('settPhone').value.trim(),
+  });
+  showToast('Settings saved!','success');
+}
+
+// ── Notifications ─────────────────────────────────────────────────────────────
+function renderNotifications() {
+  const n  = DB.getNotifications();
+  const ur = n.filter(x=>!x.is_read).length;
+  document.getElementById('notifDot').style.display = ur ? 'block' : 'none';
+  const el = document.getElementById('notifList');
+  el.innerHTML = n.length ? n.slice(0,10).map(x=>`
+    <div class="notif-item ${x.is_read?'':'unread'}">
+      <div class="notif-msg">${esc(x.msg)}</div>
+      <div class="notif-time">${fmtTime(x.at)}</div>
+    </div>`).join('')
+  : `<div style="padding:1rem;color:var(--text-muted);font-size:0.85rem">No notifications</div>`;
+}
+function markNotifsRead() { DB.markAllNotificationsRead(); renderNotifications(); }
+
+function renderActivityFeed() {
+  const feed = DB.getActivity();
+  const el   = document.getElementById('activityList');
+  el.innerHTML = feed.length ? feed.slice(0,8).map(a=>`
+    <div style="display:flex;gap:0.75rem;padding:0.5rem 0;border-bottom:0.5px solid var(--border)">
+      <span>${a.type==='case'?'📋':a.type==='document'?'📁':'🔔'}</span>
+      <div><div style="font-size:0.85rem">${esc(a.text)}</div>
+      <div style="font-size:0.73rem;color:var(--text-muted)">${fmtTime(a.at)}</div></div>
+    </div>`).join('')
+  : `<div style="color:var(--text-muted);font-size:0.85rem;padding:0.5rem 0">No activity yet.</div>`;
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function esc(s='') { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function sColor(s) { return {active:'success',in_progress:'info',pending:'gold',closed:'',dismissed:'danger'}[s]||''; }
+function fmtDate(iso) { return iso ? new Date(iso).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—'; }
+function fmtTime(iso) {
+  if (!iso) return '';
+  const d=new Date(iso), now=new Date(), diff=Math.floor((now-d)/1000);
+  if(diff<60) return 'Just now';
+  if(diff<3600) return Math.floor(diff/60)+' min ago';
+  if(diff<86400) return Math.floor(diff/3600)+' hr ago';
+  return d.toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+}
+
+// ── Legacy "Client Requests" helpers removed — all request handling now goes
+//    through the backend API (see refreshRequests() below, which calls
+//    /api/match/requests and renders incoming/outgoing). The old localStorage-
+//    scanning implementation silently failed because its target element was
+//    removed from the DOM, so the lawyer saw nothing. Kept this stub so older
+//    cached pages don't crash if they still try to call it.
+function messageClientFromRequest(clientName) {
+  const conv = DB.getOrCreateConversation(clientName || 'Client');
+  showTab('messages');
+  setTimeout(function() { openConv(conv.id, clientName || 'Client'); }, 120);
+}
+
+
+// ── Ratings tab ───────────────────────────────────────────────────────────────
+function renderRatings() {
+  var uid     = localStorage.getItem('user_id') || 'guest';
+  var key     = 'lb_' + uid + '_ratings';
+  var ratings = JSON.parse(localStorage.getItem(key) || '[]');
+
+  var avgEl   = document.getElementById('avgRatingDisplay');
+  var starEl  = document.getElementById('starsDisplay');
+  var countEl = document.getElementById('ratingCount');
+  var barsEl  = document.getElementById('ratingBars');
+  var listEl  = document.getElementById('reviewsList');
+
+  if (!ratings.length) {
+    if (avgEl)   avgEl.textContent   = '—';
+    if (starEl)  starEl.textContent  = '';
+    if (countEl) countEl.textContent = 'No reviews yet';
+    if (barsEl)  barsEl.innerHTML    = '<p style="color:var(--text-muted);font-size:.85rem">No ratings yet.</p>';
+    if (listEl)  listEl.innerHTML    = '';
+    return;
+  }
+
+  var total = ratings.reduce(function(s,r){ return s + r.score; }, 0);
+  var avg   = total / ratings.length;
+  var stars = Math.round(avg);
+  if (avgEl)   avgEl.textContent   = avg.toFixed(1);
+  if (starEl)  starEl.textContent  = '★'.repeat(stars) + '☆'.repeat(5 - stars);
+  if (countEl) countEl.textContent = 'Based on ' + ratings.length + ' review' + (ratings.length !== 1 ? 's' : '');
+
+  // Bar breakdown
+  var counts = [0, 0, 0, 0, 0];
+  ratings.forEach(function(r){ if (r.score >= 1 && r.score <= 5) counts[5 - r.score]++; });
+  if (barsEl) {
+    barsEl.innerHTML = [5,4,3,2,1].map(function(star, i) {
+      var pct = ratings.length ? Math.round(counts[i] / ratings.length * 100) : 0;
+      return '<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;font-size:.82rem">' +
+        '<span style="width:14px;text-align:right;color:var(--text-muted)">' + star + '</span>' +
+        '<span style="color:var(--gold)">★</span>' +
+        '<div style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden">' +
+          '<div style="width:' + pct + '%;height:100%;background:var(--gold);border-radius:4px"></div>' +
+        '</div>' +
+        '<span style="width:20px;color:var(--text-muted)">' + counts[i] + '</span>' +
+      '</div>';
+    }).join('');
+  }
+
+  // Reviews list
+  if (listEl) {
+    var sorted = ratings.slice().reverse();
+    listEl.innerHTML = sorted.map(function(r) {
+      return '<div class="dash-panel" style="margin-bottom:1rem"><div class="panel-body">' +
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.5rem">' +
+          '<div>' +
+            '<div style="font-weight:600;font-size:.9rem">' + esc(r.reviewer_name || 'Client') + '</div>' +
+            '<div style="font-size:.72rem;color:var(--text-muted)">' + fmtDate(r.created_at) + '</div>' +
+          '</div>' +
+          '<div style="color:var(--gold);font-size:1rem">' + '★'.repeat(r.score) + '☆'.repeat(5 - r.score) + '</div>' +
+        '</div>' +
+        (r.review ? '<p style="margin-top:.75rem;font-size:.875rem;color:var(--text-secondary)">' + esc(r.review) + '</p>' : '') +
+      '</div></div>';
+    }).join('') || '<div style="color:var(--text-muted);padding:1rem">No written reviews yet.</div>';
+  }
+}
+
+// ── Open cases browser (API-backed) ──────────────────────────────────────────
+async function refreshOpenCases() {
+  var el = document.getElementById('openCasesList');
+  if (!el) return;
+  el.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted)">Loading…</div>';
+
+  var caseType = document.getElementById('openCaseTypeFilter')?.value || '';
+  var priority = document.getElementById('openCasePriorityFilter')?.value || '';
+
+  try {
+    var res = await API.match.openCases({ case_type: caseType, priority });
+    var cases = res.cases || [];
+    if (!cases.length) {
+      el.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--text-muted)">No open cases right now. Check back soon.</div>';
+      return;
+    }
+    el.innerHTML = cases.map(renderOpenCaseCard).join('');
+  } catch (err) {
+    el.innerHTML = '<div style="padding:1.5rem;color:var(--danger);text-align:center">Could not load open cases. Backend unreachable.</div>';
+  }
+}
+
+function renderOpenCaseCard(c) {
+  var alreadySent = c.already_requested;
+  var btn = alreadySent
+    ? '<button class="btn btn-outline btn-sm" disabled>Interest Sent ✓</button>'
+    : '<button class="btn btn-primary btn-sm" onclick="expressInterest(' + c.id + ', \'' + esc(c.title).replace(/'/g, "\\'") + '\')">🙋 Express Interest</button>';
+
+  return (
+    '<div class="dash-panel" style="margin-bottom:.75rem"><div class="panel-body">' +
+      '<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem">' +
+        '<div>' +
+          '<div style="font-weight:600;font-size:1rem">' + esc(c.title || '') + '</div>' +
+          '<div style="font-size:.78rem;color:var(--text-muted);margin-top:2px">' +
+            esc(c.case_number || '') + ' · ' + esc(c.case_type || '') +
+            (c.priority ? ' · priority: ' + esc(c.priority) : '') +
+          '</div>' +
+        '</div>' +
+        '<div style="font-size:.78rem;color:var(--text-muted)">Filed ' + (c.opened_at ? new Date(c.opened_at).toLocaleDateString() : '—') + '</div>' +
+      '</div>' +
+      (c.description ? '<p style="margin-top:.5rem;font-size:.87rem;color:var(--text-secondary)">' + esc(c.description) + '</p>' : '') +
+      '<div style="font-size:.8rem;color:var(--text-muted);margin-top:.5rem">Client: ' + esc(c.client_name || '—') + '</div>' +
+      '<div style="margin-top:.75rem">' + btn + '</div>' +
+    '</div></div>'
+  );
+}
+
+async function expressInterest(caseId, title) {
+  var message = prompt('Optional message to the client for "' + title + '":', '');
+  try {
+    await API.match.createRequest({ case_id: caseId, message: message || null });
+    showToast('Interest sent to the client', 'success');
+    refreshOpenCases();
+    refreshRequests();
+  } catch (err) {
+    showToast(err.message || 'Failed to send interest', 'error');
+  }
+}
+
+// ── Requests tab (incoming client requests + outgoing interests) ─────────────
+async function refreshRequests() {
+  var incomingEl = document.getElementById('incomingRequests');
+  var outgoingEl = document.getElementById('outgoingRequests');
+  if (!incomingEl || !outgoingEl) return;
+
+  incomingEl.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted)">Loading…</div>';
+  outgoingEl.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted)">Loading…</div>';
+
+  try {
+    var res = await API.match.myRequests();
+    var incoming = res.incoming || [], outgoing = res.outgoing || [];
+
+    incomingEl.innerHTML = incoming.length
+      ? incoming.map(renderReqIncoming).join('')
+      : '<div style="padding:1.5rem;color:var(--text-muted);text-align:center">No incoming client requests.</div>';
+
+    outgoingEl.innerHTML = outgoing.length
+      ? outgoing.map(renderReqOutgoing).join('')
+      : '<div style="padding:1.5rem;color:var(--text-muted);text-align:center">You haven\'t expressed interest in any open case yet.</div>';
+
+    var openCount = incoming.filter(function(r){ return r.status === 'pending'; }).length;
+    var badge = document.getElementById('badgeRequests');
+    if (badge) badge.textContent = openCount;
+  } catch (err) {
+    incomingEl.innerHTML = '<div style="padding:1.5rem;color:var(--danger);text-align:center">Could not load requests. Backend unreachable.</div>';
+    outgoingEl.innerHTML = '';
+  }
+}
+
+function statusBadge(s) {
+  var map = { pending:'gold', accepted:'success', rejected:'danger', withdrawn:'' };
+  return '<span class="badge badge-' + (map[s]||'') + '">' + s + '</span>';
+}
+
+function renderReqIncoming(r) {
+  var actions = '';
+  if (r.status === 'pending') {
+    actions =
+      '<div style="display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap">' +
+        '<button class="btn btn-primary btn-sm" onclick="respondRequest(' + r.id + ', \'accept\')">✓ Accept Case</button>' +
+        '<button class="btn btn-outline btn-sm" onclick="respondRequest(' + r.id + ', \'reject\')">✕ Reject</button>' +
+      '</div>';
+  }
+  return (
+    '<div class="dash-panel" style="margin-bottom:.75rem"><div class="panel-body">' +
+      '<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem">' +
+        '<div>' +
+          '<div style="font-weight:600">' + esc(r.client_name || 'Client #' + r.client_id) + '</div>' +
+          '<div style="font-size:.8rem;color:var(--text-muted)">Case: ' + esc(r.case_title || '') + ' · ' + esc(r.case_number || '') + '</div>' +
+          (r.client_email ? '<div style="font-size:.78rem;color:var(--text-muted)">📧 ' + esc(r.client_email) + '</div>' : '') +
+          (r.client_phone ? '<div style="font-size:.78rem;color:var(--text-muted)">📞 ' + esc(r.client_phone) + '</div>' : '') +
+        '</div>' +
+        statusBadge(r.status) +
+      '</div>' +
+      (r.message ? '<p style="margin-top:.5rem;font-size:.85rem;color:var(--text-secondary)">"' + esc(r.message) + '"</p>' : '') +
+      actions +
+    '</div></div>'
+  );
+}
+
+function renderReqOutgoing(r) {
+  var actions = '';
+  if (r.status === 'pending') {
+    actions =
+      '<div style="margin-top:.75rem">' +
+        '<button class="btn btn-outline btn-sm" onclick="withdrawRequest(' + r.id + ')">Withdraw</button>' +
+      '</div>';
+  }
+  return (
+    '<div class="dash-panel" style="margin-bottom:.75rem"><div class="panel-body">' +
+      '<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem">' +
+        '<div>' +
+          '<div style="font-weight:600">Case: ' + esc(r.case_title || '') + '</div>' +
+          '<div style="font-size:.8rem;color:var(--text-muted)">Client: ' + esc(r.client_name || 'Client #' + r.client_id) + '</div>' +
+        '</div>' +
+        statusBadge(r.status) +
+      '</div>' +
+      (r.message ? '<p style="margin-top:.5rem;font-size:.85rem;color:var(--text-secondary)">"' + esc(r.message) + '"</p>' : '') +
+      actions +
+    '</div></div>'
+  );
+}
+
+async function respondRequest(id, action) {
+  try {
+    await API.match.respond(id, action);
+    showToast('Request ' + action + 'ed', 'success');
+    refreshRequests();
+    renderStats();
+  } catch (err) {
+    showToast(err.message || 'Failed to respond', 'error');
+  }
+}
+
+async function withdrawRequest(id) {
+  if (!confirm('Withdraw this interest?')) return;
+  try {
+    await API.match.withdraw(id);
+    showToast('Interest withdrawn', 'info');
+    refreshRequests();
+  } catch (err) {
+    showToast(err.message || 'Failed to withdraw', 'error');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', refreshRequests);
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "include": [
+    "app.py",
+    "extensions.py",
+    "manage.py",
+    "routes",
+    "models",
+    "services"
+  ],
+  "exclude": [
+    "**/__pycache__",
+    "myenv",
+    "uploads"
+  ],
+  "extraPaths": [
+    "."
+  ],
+  "pythonVersion": "3.11",
+  "reportMissingImports": "warning",
+  "reportMissingTypeStubs": "none",
+  "useLibraryCodeForTypes": true,
+  "venvPath": ".",
+  "venv": "myenv"
+}

@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel — LexBridge</title>
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/dashboard.css" />
+</head>
+<body>
+<div class="dash-layout">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand"><div class="logo-icon">🛡</div>Justice<span>Hub</span></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-label">Overview</div>
+        <a class="nav-item active" onclick="showTab('overview')"><span class="nav-icon">📊</span>Dashboard</a>
+        <a class="nav-item" onclick="showTab('analytics')"><span class="nav-icon">📈</span>Analytics</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Management</div>
+        <a class="nav-item" onclick="showTab('users')"><span class="nav-icon">👥</span>Users <span class="nav-badge" id="badgeUsers">0</span></a>
+        <a class="nav-item" onclick="showTab('lawyers')"><span class="nav-icon">⚖</span>Lawyers <span class="nav-badge" id="badgeLawyers">0</span></a>
+        <a class="nav-item" onclick="showTab('cases')"><span class="nav-icon">📋</span>All Cases <span class="nav-badge" id="badgeCases">0</span></a>
+        <a class="nav-item" onclick="showTab('documents')"><span class="nav-icon">📁</span>Documents <span class="nav-badge" id="badgeDocs">0</span></a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Operations</div>
+        <a class="nav-item" onclick="showTab('disputes')"><span class="nav-icon">⚠</span>Disputes <span class="nav-badge nav-badge-gold" id="badgeDisputes">0</span></a>
+        <a class="nav-item" onclick="showTab('verifications')"><span class="nav-icon">✅</span>Verifications <span class="nav-badge nav-badge-gold" id="badgeVerif">0</span></a>
+        <a class="nav-item" onclick="showTab('reports')"><span class="nav-icon">📰</span>Reports</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">System</div>
+        <a class="nav-item" onclick="showTab('settings')"><span class="nav-icon">⚙</span>Settings</a>
+        <a class="nav-item" href="#" onclick="logout()"><span class="nav-icon">🚪</span>Logout</a>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar" style="background:linear-gradient(135deg,rgba(224,82,82,0.3),var(--gold-dim))" id="adminAvatar">SA</div>
+        <div class="user-info">
+          <div class="u-name" id="adminName">Admin</div>
+          <div class="u-role" style="color:var(--danger)">Administrator</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="dash-main">
+    <header class="dash-topbar">
+      <div class="topbar-left">
+        <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+        <div>
+          <div class="topbar-title" id="pageTitle">Admin Dashboard</div>
+          <div class="topbar-breadcrumb">LexBridge Administration</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <span class="badge badge-danger">🛡 Admin</span>
+        <div style="position:relative">
+          <button class="topbar-btn" onclick="toggleNotif()" id="notifBtn">🔔
+            <span class="topbar-notif-dot" id="notifDot" style="display:none"></span>
+          </button>
+          <div class="notif-dropdown" id="notifDropdown" style="display:none">
+            <div class="notif-header"><strong>Admin Alerts</strong>
+              <a href="#" style="font-size:0.8rem;color:var(--gold)" onclick="markNotifsRead();return false">Clear</a>
+            </div>
+            <div id="notifList"></div>
+          </div>
+        </div>
+        <div class="user-avatar" style="background:linear-gradient(135deg,rgba(224,82,82,0.3),var(--gold-dim));cursor:pointer" id="adminAvatarTop">SA</div>
+      </div>
+    </header>
+
+    <div class="dash-content">
+
+      <!-- OVERVIEW -->
+      <div class="tab-content active" id="tab-overview">
+        <div class="dash-header"><h1>Platform Overview 🛡</h1><p>Live platform metrics across all registered users</p></div>
+        <div class="stats-row">
+          <div class="stat-card" style="--accent:var(--gold)"><div class="stat-icon">👥</div><div class="stat-num" id="statTotalUsers">0</div><div class="stat-label">Total Users</div></div>
+          <div class="stat-card" style="--accent:var(--info)"><div class="stat-icon">⚖</div><div class="stat-num" id="statTotalLawyers">0</div><div class="stat-label">Lawyers</div></div>
+          <div class="stat-card" style="--accent:var(--success)"><div class="stat-icon">📋</div><div class="stat-num" id="statTotalCases">0</div><div class="stat-label">Total Cases</div></div>
+          <div class="stat-card" style="--accent:var(--info)"><div class="stat-icon">📁</div><div class="stat-num" id="statTotalDocs">0</div><div class="stat-label">Documents</div></div>
+          <div class="stat-card" style="--accent:var(--gold)"><div class="stat-icon">💰</div><div class="stat-num" id="statRevenue">₹0</div><div class="stat-label">Total Payments</div></div>
+        </div>
+
+        <div class="dash-grid dash-grid-main">
+          <div>
+            <!-- Case volume chart -->
+            <div class="dash-panel" style="margin-bottom:1.5rem">
+              <div class="panel-header"><span class="panel-title">Cases by Status</span></div>
+              <div class="panel-body">
+                <div id="statusChart" style="display:flex;gap:0.5rem;align-items:flex-end;height:120px;padding-bottom:0.5rem"></div>
+                <div id="statusChartLabels" style="display:flex;gap:0.5rem;font-size:0.72rem;color:var(--text-muted);margin-top:0.25rem"></div>
+              </div>
+            </div>
+            <!-- Recent registrations -->
+            <div class="dash-panel">
+              <div class="panel-header"><span class="panel-title">Recent Registrations</span><button class="btn btn-outline btn-sm" onclick="showTab('users')">View All</button></div>
+              <div class="panel-body" style="padding:0">
+                <table class="dash-table">
+                  <thead><tr><th>Name</th><th>Role</th><th>Email</th><th>Joined</th><th>Action</th></tr></thead>
+                  <tbody id="recentUsersTable"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="dash-panel" style="margin-bottom:1rem">
+              <div class="panel-header"><span class="panel-title">Pending Actions</span></div>
+              <div class="panel-body" style="display:flex;flex-direction:column;gap:0.75rem">
+                <button class="btn btn-outline btn-full" onclick="showTab('verifications')">✅ <span id="pendingVerifCount">0</span> Lawyer Verifications</button>
+                <button class="btn btn-outline btn-full" onclick="showTab('documents')">📁 <span id="pendingDocsCount">0</span> Documents Pending</button>
+                <button class="btn btn-outline btn-full" onclick="showTab('disputes')">⚠ <span id="openDisputesCount">0</span> Open Disputes</button>
+                <button class="btn btn-outline btn-full" onclick="generateReport()">📊 Generate Report</button>
+              </div>
+            </div>
+            <div class="dash-panel">
+              <div class="panel-header"><span class="panel-title">System Status</span></div>
+              <div class="panel-body" style="display:flex;flex-direction:column;gap:0.6rem">
+                <div class="hcard-row">Local Storage <span style="color:var(--success)" id="storageStatus">● Checking…</span></div>
+                <div class="hcard-row" style="margin-top:0.35rem">Registered Users <span id="sysUsers">0</span></div>
+                <div class="hcard-row" style="margin-top:0.35rem">Total Data Size <span id="sysSize">0 KB</span></div>
+                <div class="hcard-row" style="margin-top:0.35rem">Last Activity <span id="sysLastActivity">—</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ANALYTICS -->
+      <div class="tab-content" id="tab-analytics">
+        <div class="dash-header"><h1>Analytics</h1><p>Platform usage breakdown from real data</p></div>
+        <div class="stats-row">
+          <div class="stat-card" style="--accent:var(--gold)"><div class="stat-icon">👤</div><div class="stat-num" id="anClients">0</div><div class="stat-label">Clients</div></div>
+          <div class="stat-card" style="--accent:var(--info)"><div class="stat-icon">⚖</div><div class="stat-num" id="anLawyers">0</div><div class="stat-label">Lawyers</div></div>
+          <div class="stat-card" style="--accent:var(--success)"><div class="stat-icon">✅</div><div class="stat-num" id="anClosed">0</div><div class="stat-label">Resolved Cases</div></div>
+          <div class="stat-card" style="--accent:var(--gold)"><div class="stat-icon">💰</div><div class="stat-num" id="anRevenue">₹0</div><div class="stat-label">Revenue</div></div>
+        </div>
+        <div class="dash-grid dash-grid-2">
+          <div class="dash-panel">
+            <div class="panel-header"><span class="panel-title">Cases by Type</span></div>
+            <div class="panel-body" id="casesByType"></div>
+          </div>
+          <div class="dash-panel">
+            <div class="panel-header"><span class="panel-title">Cases by Status</span></div>
+            <div class="panel-body" id="casesByStatus"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- USERS -->
+      <div class="tab-content" id="tab-users">
+        <div class="dash-header"><h1>User Management</h1><p>All registered client accounts</p></div>
+        <div class="filters-bar">
+          <span class="filter-chip active" onclick="filterUsers('all',this)">All</span>
+          <span class="filter-chip" onclick="filterUsers('client',this)">Clients</span>
+          <span class="filter-chip" onclick="filterUsers('active',this)">Active</span>
+          <span class="filter-chip" onclick="filterUsers('suspended',this)">Suspended</span>
+          <div class="dash-search" style="margin-left:auto;min-width:240px">
+            <span>🔍</span><input type="text" placeholder="Search users…" oninput="searchUsers(this.value)" />
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="exportCSV('users')">Export CSV</button>
+        </div>
+        <div class="dash-panel">
+          <div class="panel-body" style="padding:0">
+            <table class="dash-table">
+              <thead><tr><th>Name</th><th>Email</th><th>City</th><th>Cases</th><th>Joined</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="allUsersTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- LAWYERS -->
+      <div class="tab-content" id="tab-lawyers">
+        <div class="dash-header"><h1>Lawyer Management</h1><p>Verify and manage legal professionals</p></div>
+        <div class="filters-bar">
+          <span class="filter-chip active" onclick="filterLawyers('all',this)">All</span>
+          <span class="filter-chip" onclick="filterLawyers('pending',this)">Pending</span>
+          <span class="filter-chip" onclick="filterLawyers('verified',this)">Verified</span>
+          <span class="filter-chip" onclick="filterLawyers('suspended',this)">Suspended</span>
+          <div class="dash-search" style="margin-left:auto;min-width:240px">
+            <span>🔍</span><input type="text" placeholder="Search lawyers…" oninput="searchLawyers(this.value)" />
+          </div>
+        </div>
+        <div class="dash-panel">
+          <div class="panel-body" style="padding:0">
+            <table class="dash-table">
+              <thead><tr><th>Name</th><th>Specialization</th><th>Bar No.</th><th>Phone</th><th>Joined</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="allLawyersTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ALL CASES -->
+      <div class="tab-content" id="tab-cases">
+        <div class="dash-header"><h1>All Cases</h1><p>Every case submitted across the platform</p></div>
+        <div class="filters-bar">
+          <span class="filter-chip active" onclick="filterAdminCases('all',this)">All</span>
+          <span class="filter-chip" onclick="filterAdminCases('active',this)">Active</span>
+          <span class="filter-chip" onclick="filterAdminCases('pending',this)">Pending</span>
+          <span class="filter-chip" onclick="filterAdminCases('closed',this)">Resolved</span>
+          <div class="dash-search" style="margin-left:auto;min-width:240px">
+            <span>🔍</span><input type="text" placeholder="Search cases…" oninput="searchAdminCases(this.value)" />
+          </div>
+        </div>
+        <div class="dash-panel">
+          <div class="panel-body" style="padding:0">
+            <table class="dash-table">
+              <thead><tr><th>Case #</th><th>Title</th><th>Type</th><th>Owner</th><th>Filed</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="adminCasesTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- DOCUMENTS -->
+      <div class="tab-content" id="tab-documents">
+        <div class="dash-header"><h1>Document Approvals</h1><p>Review uploaded documents across all users</p></div>
+        <div class="dash-panel">
+          <div class="panel-body" style="padding:0">
+            <table class="dash-table">
+              <thead><tr><th>File Name</th><th>Type</th><th>Size</th><th>Uploader</th><th>Uploaded</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="adminDocsTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- DISPUTES -->
+      <div class="tab-content" id="tab-disputes">
+        <div class="dash-header"><h1>Disputes</h1><p>Manage platform disputes</p></div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:1rem">
+          <button class="btn btn-primary" onclick="openAddDispute()">+ Log Dispute</button>
+        </div>
+        <div id="disputeCards"></div>
+      </div>
+
+      <!-- VERIFICATIONS -->
+      <div class="tab-content" id="tab-verifications">
+        <div class="dash-header"><h1>Lawyer Verifications</h1><p>Review bar council registrations</p></div>
+        <div id="verificationCards"></div>
+      </div>
+
+      <!-- REPORTS -->
+      <div class="tab-content" id="tab-reports">
+        <div class="dash-header"><h1>Reports</h1><p>Export platform data</p></div>
+        <div class="dash-grid dash-grid-3">
+          <div class="dash-panel text-center" style="cursor:pointer" onclick="exportCSV('users')">
+            <div class="panel-body"><div style="font-size:2rem;margin-bottom:0.75rem">👥</div><div style="font-weight:600">User Report</div><div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.35rem">All registrations → CSV</div></div>
+          </div>
+          <div class="dash-panel text-center" style="cursor:pointer" onclick="exportCSV('cases')">
+            <div class="panel-body"><div style="font-size:2rem;margin-bottom:0.75rem">📋</div><div style="font-weight:600">Case Report</div><div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.35rem">All cases → CSV</div>
+            </div>
+          </div>
+          <div class="dash-panel text-center" style="cursor:pointer" onclick="exportCSV('payments')">
+            <div class="panel-body"><div style="font-size:2rem;margin-bottom:0.75rem">💰</div><div style="font-weight:600">Revenue Report</div><div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.35rem">All payments → CSV</div></div>
+          </div>
+        </div>
+        <!-- Summary card -->
+        <div class="dash-panel" style="margin-top:1.5rem">
+          <div class="panel-header"><span class="panel-title">Platform Summary</span></div>
+          <div class="panel-body" id="reportSummary"></div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="tab-content" id="tab-settings">
+        <div class="dash-header"><h1>System Settings</h1><p>Configure platform parameters</p></div>
+        <div class="dash-panel" style="max-width:560px">
+          <div class="panel-header"><span class="panel-title">General Settings</span></div>
+          <div class="panel-body">
+            <form onsubmit="saveSettings(event)">
+              <div class="form-group"><label class="form-label">Platform Name</label><input type="text" class="form-input" id="setPlatformName" /></div>
+              <div class="form-group"><label class="form-label">Support Email</label><input type="email" class="form-input" id="setSupportEmail" /></div>
+              <div class="form-group"><label class="form-label">Platform Commission (%)</label><input type="number" class="form-input" id="setCommission" min="0" max="100" /></div>
+              <div class="form-group"><label class="form-label">Max File Upload (MB)</label><input type="number" class="form-input" id="setMaxFile" min="1" max="100" /></div>
+              <button type="submit" class="btn btn-primary mt-2">Save Settings</button>
+            </form>
+          </div>
+        </div>
+        <div class="dash-panel" style="max-width:560px;margin-top:1rem;border:1px solid var(--danger)">
+          <div class="panel-header"><span class="panel-title" style="color:var(--danger)">⚠ Danger Zone</span></div>
+          <div class="panel-body">
+            <p style="font-size:0.875rem;color:var(--text-secondary);margin-bottom:1rem">These actions clear all stored data and cannot be undone.</p>
+            <button class="btn btn-outline btn-sm" style="border-color:var(--danger);color:var(--danger)" onclick="clearAllData()">Clear All Platform Data</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Add Dispute Modal -->
+<div id="disputeModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:999;align-items:center;justify-content:center">
+  <div class="dash-panel" style="width:480px;max-width:90vw">
+    <div class="panel-header"><span class="panel-title">Log Dispute</span><button class="btn btn-outline btn-sm" onclick="closeDispute()">✕</button></div>
+    <div class="panel-body">
+      <form id="disputeForm" onsubmit="addDispute(event)">
+        <div class="form-group"><label class="form-label">Subject *</label><input type="text" class="form-input" name="subject" required /></div>
+        <div class="form-group"><label class="form-label">Filed By (User ID / Name) *</label><input type="text" class="form-input" name="filed_by" required /></div>
+        <div class="form-group"><label class="form-label">Against (User ID / Name) *</label><input type="text" class="form-input" name="against" required /></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Severity</label>
+            <select class="form-select" name="severity"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">Status</label>
+            <select class="form-select" name="status"><option value="open">Open</option><option value="investigating">Investigating</option></select>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" name="description" style="min-height:80px"></textarea></div>
+        <button type="submit" class="btn btn-primary btn-full mt-2">Log Dispute</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+<script src="scripts/db.js"></script>
+<script src="scripts/main.js"></script>
+<script src="scripts/admin.js"></script>
+<script>
+// ── Auth guard ────────────────────────────────────────────────────────────────
+(function() {
+  const role = localStorage.getItem('user_role');
+  if (role && role !== 'admin') { window.location.href = 'login.html?role=admin'; }
+})();
+
+// ── Admin DB helpers — reads ALL registered users from localStorage ────────────
+const AdminDB = {
+  getAllUsers() {
+    const users = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('lb_registered_')) {
+        try { users.push(JSON.parse(localStorage.getItem(key))); } catch {}
+      }
+    }
+    // Also include the currently logged-in user if not in registered list
+    const current = DB.getUser();
+    if (current && current.email && !users.find(u => u.email === current.email)) {
+      users.push(current);
+    }
+    return users;
+  },
+
+  getAllCases() {
+    const cases = [];
+    const seen  = new Set();
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.endsWith('_cases')) {
+        try {
+          JSON.parse(localStorage.getItem(key)).forEach(c => {
+            if (!seen.has(c.id)) { cases.push(c); seen.add(c.id); }
+          });
+        } catch {}
+      }
+    }
+    return cases.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+  },
+
+  getAllDocuments() {
+    const docs = [];
+    const seen = new Set();
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.endsWith('_documents')) {
+        try {
+          JSON.parse(localStorage.getItem(key)).forEach(d => {
+            if (!seen.has(d.id)) { docs.push(d); seen.add(d.id); }
+          });
+        } catch {}
+      }
+    }
+    return docs.sort((a,b) => new Date(b.uploaded_at) - new Date(a.uploaded_at));
+  },
+
+  getAllPayments() {
+    const pays = [];
+    const seen = new Set();
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.endsWith('_payments')) {
+        try {
+          JSON.parse(localStorage.getItem(key)).forEach(p => {
+            if (!seen.has(p.id)) { pays.push(p); seen.add(p.id); }
+          });
+        } catch {}
+      }
+    }
+    return pays;
+  },
+
+  getDisputes() { return JSON.parse(localStorage.getItem('admin_disputes') || '[]'); },
+  saveDisputes(d) { localStorage.setItem('admin_disputes', JSON.stringify(d)); },
+  getSettings() { return JSON.parse(localStorage.getItem('admin_settings') || '{"platform_name":"LexBridge","support_email":"support@lexbridge.in","commission":10,"max_file_mb":10}'); },
+  saveSettings(s) { localStorage.setItem('admin_settings', JSON.stringify(s)); },
+  getUserStatuses() { return JSON.parse(localStorage.getItem('admin_user_statuses') || '{}'); },
+  setUserStatus(email, status) {
+    const s = this.getUserStatuses(); s[email] = status;
+    localStorage.setItem('admin_user_statuses', JSON.stringify(s));
+  },
+  getLawyerVerifications() { return JSON.parse(localStorage.getItem('admin_verifications') || '{}'); },
+  setLawyerVerification(email, status) {
+    const v = this.getLawyerVerifications(); v[email] = status;
+    localStorage.setItem('admin_verifications', JSON.stringify(v));
+  },
+};
+
+// ── UI helpers ────────────────────────────────────────────────────────────────
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
+function toggleNotif() {
+  const d = document.getElementById('notifDropdown');
+  d.style.display = d.style.display === 'none' ? 'block' : 'none';
+}
+function logout() {
+  ['access_token','refresh_token','user_role'].forEach(k => localStorage.removeItem(k));
+  window.location.href = 'index.html';
+}
+function showToast(msg, type='info') {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = `toast toast-${type}`; t.textContent = msg;
+  c.appendChild(t); setTimeout(() => t.remove(), 3500);
+}
+function esc(s='') { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function fmtDate(iso) { return iso ? new Date(iso).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—'; }
+function fmtTime(iso) {
+  if (!iso) return '';
+  const d = new Date(iso), now = new Date(), diff = Math.floor((now-d)/1000);
+  if (diff<60) return 'Just now';
+  if (diff<3600) return Math.floor(diff/60)+' min ago';
+  if (diff<86400) return Math.floor(diff/3600)+' hr ago';
+  return fmtDate(iso);
+}
+function sColor(s) { return {active:'success',in_progress:'info',pending:'gold',closed:'',open:'danger',investigating:'gold',resolved:'success',dismissed:''}[s]||''; }
+
+function showTab(name) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  document.getElementById('pageTitle').textContent = ({
+    overview:'Admin Dashboard', analytics:'Analytics', users:'User Management',
+    lawyers:'Lawyer Management', cases:'All Cases', documents:'Document Approvals',
+    disputes:'Disputes', verifications:'Lawyer Verifications', reports:'Reports', settings:'System Settings'
+  })[name] || name;
+  const fns = { users:renderUsers, lawyers:renderLawyers, cases:renderAdminCases,
+    documents:renderDocuments, disputes:renderDisputes, verifications:renderVerifications,
+    analytics:renderAnalytics, reports:renderReports, settings:loadSettings };
+  if (fns[name]) fns[name]();
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+function init() {
+  const name = localStorage.getItem('user_name') || 'Admin';
+  const ini  = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() || 'SA';
+  document.getElementById('adminName').textContent     = name;
+  document.getElementById('adminAvatar').textContent   = ini;
+  document.getElementById('adminAvatarTop').textContent= ini;
+  renderOverview();
+  renderSystemStatus();
+}
+
+// ── Overview ──────────────────────────────────────────────────────────────────
+async function renderOverview() {
+  try {
+    const res = await fetch('/api/admin/stats', {
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('access_token')}` }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      const stats = data.stats;
+      document.getElementById('statTotalUsers').textContent   = stats.total_users;
+      document.getElementById('statTotalLawyers').textContent = stats.total_lawyers;
+      document.getElementById('statTotalCases').textContent   = stats.total_cases;
+      document.getElementById('statTotalDocs').textContent    = stats.total_docs;
+      document.getElementById('statRevenue').textContent      = '₹' + stats.total_revenue.toLocaleString('en-IN');
+      document.getElementById('badgeUsers').textContent       = stats.total_users - stats.total_lawyers;
+      document.getElementById('badgeLawyers').textContent     = stats.total_lawyers;
+      document.getElementById('badgeCases').textContent       = stats.total_cases;
+      document.getElementById('badgeDocs').textContent        = stats.total_docs;
+      document.getElementById('badgeDisputes').textContent    = stats.open_disputes;
+      document.getElementById('badgeVerif').textContent       = stats.pending_verif;
+      // Update other elements if they exist
+      const pendingVerifEl = document.getElementById('pendingVerifCount');
+      if (pendingVerifEl) pendingVerifEl.textContent = stats.pending_verif;
+      const pendingDocsEl = document.getElementById('pendingDocsCount');
+      if (pendingDocsEl) pendingDocsEl.textContent = stats.pending_docs;
+      const openDisputesEl = document.getElementById('openDisputesCount');
+      if (openDisputesEl) openDisputesEl.textContent = stats.open_disputes;
+    } else {
+      console.error('Failed to fetch stats:', res.status);
+    }
+
+    // Fetch recent users
+    const usersRes = await fetch('/api/admin/users?page=1&per_page=5', {
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('access_token')}` }
+    });
+    if (usersRes.ok) {
+      const usersData = await usersRes.json();
+      const tbody = document.getElementById('recentUsersTable');
+      tbody.innerHTML = usersData.users.map(u => `
+        <tr>
+          <td><strong>${esc(u.full_name || '—')}</strong></td>
+          <td><span class="badge badge-${u.role === 'lawyer' ? 'info' : ''}">${esc(u.role || 'client')}</span></td>
+          <td>${esc(u.email || '')}</td>
+          <td>${fmtDate(u.created_at)}</td>
+          <td><button class="btn btn-outline btn-sm" onclick="showTab('users')">View</button></td>
+        </tr>
+      `).join('') || `<tr><td colspan="5" style="text-align:center;padding:1.5rem;color:var(--text-muted)">No users registered yet.</td></tr>`;
+    }
+  } catch (e) {
+    console.error('Error fetching overview data:', e);
+  }
+}
+
+// ── Users ─────────────────────────────────────────────────────────────────────
+async function renderUsers() {
+  try {
+    const res = await fetch('/api/admin/users?role=client', {
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('access_token')}` }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      const tbody = document.getElementById('allUsersTable');
+      if (!tbody) return;
+      tbody.innerHTML = data.users.map(u => `
+        <tr>
+          <td>${esc(u.full_name)}</td>
+          <td>${esc(u.email)}</td>
+          <td>${esc(u.phone || '—')}</td>
+          <td>—</td>
+          <td>${fmtDate(u.created_at)}</td>
+          <td><span class="badge badge-${u.is_active ? 'success' : 'danger'}">${u.is_active ? 'Active' : 'Suspended'}</span></td>
+          <td>
+            <button class="btn btn-outline btn-sm" onclick="toggleUserStatus(${u.id}, ${!u.is_active})">
+              ${u.is_active ? 'Suspend' : 'Reinstate'}
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+  } catch (e) {
+    console.error('Error fetching users:', e);
+  }
+}
+
+// ── Lawyers ──────────────────────────────────────────────────────────────────
+async function renderLawyers() {
+  try {
+    const res = await fetch('/api/admin/users?role=lawyer', {
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('access_token')}` }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      let users = data.users;
+      // Apply filters
+      if (lawyerFilter === 'pending') users = users.filter(u => !u.is_verified);
+      else if (lawyerFilter === 'verified') users = users.filter(u => u.is_verified);
+      else if (lawyerFilter === 'suspended') users = users.filter(u => !u.is_active);
+      // Apply search
+      if (lawyerQuery) users = users.filter(u => (u.full_name + (u.lawyer_profile?.bar_council_no || '')).toLowerCase().includes(lawyerQuery.toLowerCase()));
+      const tbody = document.getElementById('allLawyersTable');
+      if (!tbody) return;
+      tbody.innerHTML = users.length ? users.map(u => `
+        <tr>
+          <td>${esc(u.full_name)}</td>
+          <td>${u.lawyer_profile ? esc(u.lawyer_profile.specializations?.join(', ') || '—') : '—'}</td>
+          <td>${u.lawyer_profile ? esc(u.lawyer_profile.bar_council_no) : '—'}</td>
+          <td>${esc(u.phone || '—')}</td>
+          <td>${fmtDate(u.created_at)}</td>
+          <td><span class="badge badge-${u.is_verified ? 'success' : 'gold'}">${u.is_verified ? 'Verified' : 'Pending'}</span></td>
+          <td>
+            ${!u.is_verified ? `<button class="btn btn-outline btn-sm" onclick="verifyLawyer(${u.id})">Verify</button>` : ''}
+            <button class="btn btn-outline btn-sm" onclick="toggleUserStatus(${u.id}, ${!u.is_active})">
+              ${u.is_active ? 'Suspend' : 'Reinstate'}
+            </button>
+          </td>
+        </tr>
+      `).join('') : `<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted)">No lawyers found.</td></tr>`;
+    }
+  } catch (e) {
+    console.error('Error fetching lawyers:', e);
+  }
+}
+
+// ── User actions ─────────────────────────────────────────────────────────────
+async function toggleUserStatus(userId, suspend) {
+  try {
+    const res = await fetch(`/api/admin/users/${userId}/status`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ action: suspend ? 'suspend' : 'reinstate' })
+    });
+    if (res.ok) {
+      showToast(`User ${suspend ? 'suspended' : 'reinstated'} successfully`, 'success');
+      // Refresh the current tab
+      const activeTab = document.querySelector('.tab-content.active');
+      if (activeTab.id === 'tab-users') renderUsers();
+      else if (activeTab.id === 'tab-lawyers') renderLawyers();
+    } else {
+      const data = await res.json();
+      showToast(data.error || 'Failed to update user status', 'error');
+    }
+  } catch (e) {
+    console.error('Error updating user status:', e);
+    showToast('Error updating user status', 'error');
+  }
+}
+
+async function verifyLawyer(userId) {
+  try {
+    const res = await fetch(`/api/admin/verifications/${userId}/approve`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('access_token')}` }
+    });
+    if (res.ok) {
+      showToast('Lawyer verified successfully', 'success');
+      renderLawyers();
+      renderOverview(); // Update stats
+    } else {
+      const data = await res.json();
+      showToast(data.error || 'Failed to verify lawyer', 'error');
+    }
+  } catch (e) {
+    console.error('Error verifying lawyer:', e);
+    showToast('Error verifying lawyer', 'error');
+  }
+}
+
+function renderSystemStatus() {
+  try {
+    const used = Object.keys(localStorage).reduce((s,k) => s + (localStorage.getItem(k)||'').length, 0);
+    document.getElementById('storageStatus').textContent = '● Online';
+    document.getElementById('storageStatus').style.color = 'var(--success)';
+    document.getElementById('sysSize').textContent = (used/1024).toFixed(1)+' KB';
+    // Get user count from stats (updated by renderOverview)
+    const totalUsers = document.getElementById('statTotalUsers').textContent || '0';
+    document.getElementById('sysUsers').textContent = totalUsers;
+    // Last activity from any activity feed
+    let latest = null;
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.endsWith('_activity')) {
+        try {
+          const feed = JSON.parse(localStorage.getItem(k));
+          if (feed.length) { const t = new Date(feed[0].at); if (!latest || t > latest) latest = t; }
+        } catch {}
+      }
+    }
+    document.getElementById('sysLastActivity').textContent = latest ? fmtTime(latest.toISOString()) : 'No activity yet';
+  } catch(e) {
+    document.getElementById('storageStatus').textContent = '● Error';
+    document.getElementById('storageStatus').style.color = 'var(--danger)';
+  }
+}
+
+// ── Users ─────────────────────────────────────────────────────────────────────
+let userFilter = 'all', userQuery = '';
+
+function filterUsers(f, chip) {
+  userFilter = f;
+  document.querySelectorAll('#tab-users .filter-chip').forEach(c=>c.classList.remove('active'));
+  if(chip) chip.classList.add('active');
+  renderUsers();
+}
+function searchUsers(q) { userQuery = q; renderUsers(); }
+
+// ── Lawyers ───────────────────────────────────────────────────────────────────
+let lawyerFilter='all', lawyerQuery='';
+
+function filterLawyers(f, chip) {
+  lawyerFilter = f;
+  document.querySelectorAll('#tab-lawyers .filter-chip').forEach(c=>c.classList.remove('active'));
+  if(chip) chip.classList.add('active');
+  renderLawyers();
+}
+function searchLawyers(q) { lawyerQuery = q; renderLawyers(); }
+
+// ── Cases ─────────────────────────────────────────────────────────────────────
+let caseFilter='all', caseQuery='';
+function filterAdminCases(f, chip) {
+  caseFilter = f;
+  document.querySelectorAll('#tab-cases .filter-chip').forEach(c=>c.classList.remove('active'));
+  if(chip) chip.classList.add('active'); renderAdminCases();
+}
+function searchAdminCases(q) { caseQuery=q; renderAdminCases(); }
+
+function renderAdminCases() {
+  let cases = AdminDB.getAllCases();
+  if (caseFilter!=='all') cases = cases.filter(c=>c.status===caseFilter);
+  if (caseQuery) cases = cases.filter(c=>(c.title+c.case_number+c.case_type).toLowerCase().includes(caseQuery.toLowerCase()));
+
+  const tbody = document.getElementById('adminCasesTable');
+  tbody.innerHTML = cases.length ? cases.map(c=>`
+    <tr>
+      <td><code style="font-size:0.78rem">${esc(c.case_number)}</code></td>
+      <td>${esc(c.title)}</td>
+      <td>${esc(c.case_type||'—')}</td>
+      <td>${esc(c.client_name||'User')}</td>
+      <td>${fmtDate(c.created_at)}</td>
+      <td><span class="badge badge-${sColor(c.status)}">${c.status}</span></td>
+      <td>
+        <select class="form-select" style="width:auto;font-size:0.78rem;padding:0.25rem 0.4rem" onchange="adminUpdateCaseStatus('${c.id}',this.value)">
+          <option value="pending" ${c.status==='pending'?'selected':''}>Pending</option>
+          <option value="active" ${c.status==='active'?'selected':''}>Active</option>
+          <option value="in_progress" ${c.status==='in_progress'?'selected':''}>In Progress</option>
+          <option value="closed" ${c.status==='closed'?'selected':''}>Closed</option>
+          <option value="dismissed" ${c.status==='dismissed'?'selected':''}>Dismissed</option>
+        </select>
+      </td>
+    </tr>`).join('')
+  : `<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted)">No cases on the platform yet.</td></tr>`;
+}
+
+function adminUpdateCaseStatus(id, status) {
+  // Find which user namespace has this case and update it
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.endsWith('_cases')) {
+      try {
+        const cases = JSON.parse(localStorage.getItem(key));
+        const idx   = cases.findIndex(c=>c.id===id);
+        if (idx !== -1) {
+          cases[idx].status = status;
+          localStorage.setItem(key, JSON.stringify(cases));
+          break;
+        }
+      } catch {}
+    }
+  }
+  renderAdminCases(); showToast('Case status updated','success');
+}
+
+// ── Documents ─────────────────────────────────────────────────────────────────
+function renderDocuments() {
+  const docs  = AdminDB.getAllDocuments();
+  const users = AdminDB.getAllUsers();
+  const tbody = document.getElementById('adminDocsTable');
+  tbody.innerHTML = docs.length ? docs.map(d=>{
+    const uploader = users.find(u=>u.id===d.uploaded_by)||{};
+    return `<tr>
+      <td>📄 ${esc(d.original_name)}</td>
+      <td>${esc((d.mime_type||'').split('/')[1]||'').toUpperCase()}</td>
+      <td>${(d.file_size_bytes/1024).toFixed(1)} KB</td>
+      <td>${esc(uploader.full_name||'User')}</td>
+      <td>${fmtDate(d.uploaded_at)}</td>
+      <td><span class="badge badge-${d.status==='verified'?'success':d.status==='rejected'?'danger':'gold'}">${d.status}</span></td>
+      <td style="display:flex;gap:0.4rem">
+        ${d.status==='pending'?`
+          <button class="btn btn-outline btn-sm" onclick="updateDocStatus('${d.id}','verified')">✅ Approve</button>
+          <button class="btn btn-outline btn-sm" style="color:var(--danger)" onclick="updateDocStatus('${d.id}','rejected')">❌ Reject</button>`
+        :`<span style="color:var(--text-muted);font-size:0.8rem">${d.status}</span>`}
+      </td>
+    </tr>`;
+  }).join('')
+  : `<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted)">No documents uploaded yet.</td></tr>`;
+}
+
+function updateDocStatus(id, status) {
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.endsWith('_documents')) {
+      try {
+        const docs = JSON.parse(localStorage.getItem(key));
+        const idx  = docs.findIndex(d=>d.id===id);
+        if (idx !== -1) { docs[idx].status = status; localStorage.setItem(key, JSON.stringify(docs)); break; }
+      } catch {}
+    }
+  }
+  renderDocuments(); showToast(`Document ${status}`, status==='verified'?'success':'error');
+}
+
+// ── Disputes ──────────────────────────────────────────────────────────────────
+function renderDisputes() {
+  const disputes = AdminDB.getDisputes();
+  const el       = document.getElementById('disputeCards');
+  if (!disputes.length) {
+    el.innerHTML = `<div style="text-align:center;padding:3rem;color:var(--text-muted)">No disputes logged yet.</div>`; return;
+  }
+  el.innerHTML = disputes.map((d,i)=>`
+    <div class="dash-panel" style="margin-bottom:1rem;border-left:3px solid var(--${d.severity==='high'?'danger':d.severity==='medium'?'gold':'info'})">
+      <div class="panel-body">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem">
+          <div>
+            <div style="font-weight:600">${esc(d.subject)}</div>
+            <div style="font-size:0.78rem;color:var(--text-muted);margin-top:2px">Filed by: ${esc(d.filed_by)} · Against: ${esc(d.against)} · ${fmtDate(d.created_at)}</div>
+          </div>
+          <div style="display:flex;gap:0.5rem;align-items:center">
+            <span class="badge badge-${sColor(d.status)}">${d.status}</span>
+            <span class="badge badge-${d.severity==='high'?'danger':d.severity==='medium'?'gold':'info'}">${d.severity}</span>
+          </div>
+        </div>
+        ${d.description?`<p style="margin-top:0.75rem;font-size:0.875rem;color:var(--text-secondary)">${esc(d.description)}</p>`:''}
+        <div style="margin-top:0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap">
+          ${d.status!=='resolved'?`<button class="btn btn-outline btn-sm" onclick="resolveDispute(${i})">✅ Mark Resolved</button>`:''}
+          ${d.status==='open'?`<button class="btn btn-outline btn-sm" onclick="investigateDispute(${i})">🔍 Investigate</button>`:''}
+          <button class="btn btn-outline btn-sm" style="color:var(--danger)" onclick="deleteDispute(${i})">🗑 Remove</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function openAddDispute()  { document.getElementById('disputeModal').style.display='flex'; }
+function closeDispute()    { document.getElementById('disputeModal').style.display='none'; }
+
+function addDispute(e) {
+  e.preventDefault();
+  const data = {}; new FormData(e.target).forEach((v,k)=>{ data[k]=v; });
+  data.created_at = new Date().toISOString();
+  const disputes = AdminDB.getDisputes(); disputes.unshift(data); AdminDB.saveDisputes(disputes);
+  e.target.reset(); closeDispute(); renderDisputes(); renderOverview();
+  showToast('Dispute logged','success');
+}
+
+function resolveDispute(i) {
+  const d = AdminDB.getDisputes(); d[i].status='resolved'; d[i].resolved_at=new Date().toISOString();
+  AdminDB.saveDisputes(d); renderDisputes(); renderOverview(); showToast('Dispute resolved','success');
+}
+function investigateDispute(i) {
+  const d = AdminDB.getDisputes(); d[i].status='investigating';
+  AdminDB.saveDisputes(d); renderDisputes(); showToast('Marked as investigating','info');
+}
+function deleteDispute(i) {
+  const d = AdminDB.getDisputes(); d.splice(i,1); AdminDB.saveDisputes(d); renderDisputes(); renderOverview();
+}
+
+// ── Verifications ─────────────────────────────────────────────────────────────
+async function renderVerifications() {
+  try {
+    const res = await fetch('/api/admin/verifications/pending', {
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('access_token')}` }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      const el = document.getElementById('verificationCards');
+      if (!data.lawyers.length) {
+        el.innerHTML = `<div style="text-align:center;padding:3rem;color:var(--text-muted)">No pending verifications.</div>`;
+        return;
+      }
+      el.innerHTML = data.lawyers.map(l => `
+        <div class="dash-panel" style="margin-bottom:1rem">
+          <div class="panel-body">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem">
+              <div>
+                <div style="font-weight:600;font-size:1rem">${esc(l.full_name || '—')}</div>
+                <div style="font-size:0.8rem;color:var(--text-muted);margin-top:2px">${esc(l.email)}</div>
+                <div style="font-size:0.8rem;color:var(--text-muted);margin-top:2px">Bar No: <strong>${l.lawyer_profile ? esc(l.lawyer_profile.bar_council_no || 'Not provided') : 'Not provided'}</strong></div>
+              </div>
+              <span class="badge badge-gold">Pending</span>
+            </div>
+            <div style="margin-top:0.75rem;display:flex;gap:0.75rem">
+              <button class="btn btn-primary btn-sm" onclick="verifyLawyer(${l.id})">✅ Approve</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    } else {
+      console.error('Failed to fetch verifications:', res.status);
+    }
+  } catch (e) {
+    console.error('Error fetching verifications:', e);
+  }
+}
+
+// ── Analytics ─────────────────────────────────────────────────────────────────
+function renderAnalytics() {
+  const users    = AdminDB.getAllUsers();
+  const cases    = AdminDB.getAllCases();
+  const payments = AdminDB.getAllPayments();
+  const clients  = users.filter(u=>u.role!=='lawyer');
+  const lawyers  = users.filter(u=>u.role==='lawyer');
+  const closed   = cases.filter(c=>c.status==='closed').length;
+  const revenue  = payments.filter(p=>p.status==='completed').reduce((s,p)=>s+Number(p.amount),0);
+
+  document.getElementById('anClients').textContent = clients.length;
+  document.getElementById('anLawyers').textContent = lawyers.length;
+  document.getElementById('anClosed').textContent  = closed;
+  document.getElementById('anRevenue').textContent = '₹'+revenue.toLocaleString('en-IN');
+
+  // Cases by type
+  const typeMap = {};
+  cases.forEach(c => { const t=c.case_type||'Other'; typeMap[t]=(typeMap[t]||0)+1; });
+  const maxT = Math.max(...Object.values(typeMap),1);
+  document.getElementById('casesByType').innerHTML = Object.keys(typeMap).length
+    ? Object.entries(typeMap).sort((a,b)=>b[1]-a[1]).map(([t,n])=>`
+        <div style="margin-bottom:0.75rem">
+          <div style="display:flex;justify-content:space-between;font-size:0.83rem;margin-bottom:3px">
+            <span>${esc(t)}</span><span>${n}</span>
+          </div>
+          <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+            <div style="width:${(n/maxT*100).toFixed(1)}%;height:100%;background:var(--gold);border-radius:4px"></div>
+          </div>
+        </div>`).join('')
+    : `<div style="color:var(--text-muted);font-size:0.85rem">No cases yet.</div>`;
+
+  // Cases by status
+  const statusMap = {};
+  cases.forEach(c=>{ statusMap[c.status]=(statusMap[c.status]||0)+1; });
+  const maxS = Math.max(...Object.values(statusMap),1);
+  const statusColors = {active:'var(--success)',in_progress:'var(--info)',pending:'var(--gold)',closed:'var(--text-muted)',dismissed:'var(--danger)'};
+  document.getElementById('casesByStatus').innerHTML = Object.keys(statusMap).length
+    ? Object.entries(statusMap).map(([s,n])=>`
+        <div style="margin-bottom:0.75rem">
+          <div style="display:flex;justify-content:space-between;font-size:0.83rem;margin-bottom:3px">
+            <span>${esc(s)}</span><span>${n}</span>
+          </div>
+          <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+            <div style="width:${(n/maxS*100).toFixed(1)}%;height:100%;background:${statusColors[s]||'var(--gold)'};border-radius:4px"></div>
+          </div>
+        </div>`).join('')
+    : `<div style="color:var(--text-muted);font-size:0.85rem">No cases yet.</div>`;
+}
+
+// ── Reports ───────────────────────────────────────────────────────────────────
+function renderReports() {
+  const users    = AdminDB.getAllUsers();
+  const cases    = AdminDB.getAllCases();
+  const payments = AdminDB.getAllPayments();
+  const revenue  = payments.filter(p=>p.status==='completed').reduce((s,p)=>s+Number(p.amount),0);
+  document.getElementById('reportSummary').innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem">
+      <div><div style="font-size:0.78rem;color:var(--text-muted)">Total Users</div><div style="font-size:1.5rem;font-weight:600">${users.length}</div></div>
+      <div><div style="font-size:0.78rem;color:var(--text-muted)">Total Cases</div><div style="font-size:1.5rem;font-weight:600">${cases.length}</div></div>
+      <div><div style="font-size:0.78rem;color:var(--text-muted)">Resolved Cases</div><div style="font-size:1.5rem;font-weight:600">${cases.filter(c=>c.status==='closed').length}</div></div>
+      <div><div style="font-size:0.78rem;color:var(--text-muted)">Total Revenue</div><div style="font-size:1.5rem;font-weight:600">₹${revenue.toLocaleString('en-IN')}</div></div>
+      <div><div style="font-size:0.78rem;color:var(--text-muted)">Documents</div><div style="font-size:1.5rem;font-weight:600">${AdminDB.getAllDocuments().length}</div></div>
+      <div><div style="font-size:0.78rem;color:var(--text-muted)">Disputes</div><div style="font-size:1.5rem;font-weight:600">${AdminDB.getDisputes().length}</div></div>
+    </div>`;
+}
+
+function exportCSV(type) {
+  let rows = [], headers = [];
+  if (type==='users') {
+    headers = ['Name','Email','Role','City','Phone','Joined'];
+    rows = AdminDB.getAllUsers().map(u=>[u.full_name||'',u.email||'',u.role||'',u.city||'',u.phone||'',fmtDate(u.created_at)]);
+  } else if (type==='cases') {
+    headers = ['Case#','Title','Type','Status','Priority','Hearing','Filed'];
+    rows = AdminDB.getAllCases().map(c=>[c.case_number,c.title,c.case_type,c.status,c.priority,c.next_hearing||'',fmtDate(c.created_at)]);
+  } else {
+    headers = ['Date','Description','Amount','Status'];
+    rows = AdminDB.getAllPayments().map(p=>[fmtDate(p.created_at),p.description,p.amount,p.status]);
+  }
+  const csv = [headers, ...rows].map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = `lexbridge_${type}_${Date.now()}.csv`;
+  a.click();
+  showToast(`${type} report downloaded`, 'success');
+}
+
+function generateReport() {
+  showTab('reports'); renderReports();
+}
+
+// ── Settings ──────────────────────────────────────────────────────────────────
+function loadSettings() {
+  const s = AdminDB.getSettings();
+  document.getElementById('setPlatformName').value = s.platform_name || 'LexBridge';
+  document.getElementById('setSupportEmail').value = s.support_email || 'support@lexbridge.in';
+  document.getElementById('setCommission').value   = s.commission ?? 10;
+  document.getElementById('setMaxFile').value      = s.max_file_mb ?? 10;
+}
+
+function saveSettings(e) {
+  e.preventDefault();
+  AdminDB.saveSettings({
+    platform_name: document.getElementById('setPlatformName').value,
+    support_email: document.getElementById('setSupportEmail').value,
+    commission:    Number(document.getElementById('setCommission').value),
+    max_file_mb:   Number(document.getElementById('setMaxFile').value),
+  });
+  showToast('Settings saved!', 'success');
+}
+
+function clearAllData() {
+  if (!confirm('This will permanently delete ALL platform data (users, cases, documents, payments). Are you sure?')) return;
+  if (!confirm('FINAL WARNING: This cannot be undone. Click OK to clear everything.')) return;
+  const keep = ['access_token','refresh_token','user_role','user_id','user_name','user_email','admin_settings'];
+  const keys  = Object.keys(localStorage).filter(k=>!keep.includes(k));
+  keys.forEach(k=>localStorage.removeItem(k));
+  renderOverview(); renderSystemStatus();
+  showToast('All data cleared', 'info');
+}
+
+// ── Notifications ─────────────────────────────────────────────────────────────
+function renderNotifications(disputes=0, verifs=0, docs=0) {
+  const alerts = [];
+  if (verifs>0)   alerts.push({msg:`${verifs} lawyer(s) awaiting verification`,type:'warn'});
+  if (docs>0)     alerts.push({msg:`${docs} document(s) pending approval`,type:'info'});
+  if (disputes>0) alerts.push({msg:`${disputes} open dispute(s) need attention`,type:'danger'});
+
+  const el = document.getElementById('notifList');
+  el.innerHTML = alerts.length ? alerts.map(a=>`
+    <div class="notif-item unread">
+      <div class="notif-msg">${esc(a.msg)}</div>
+      <div class="notif-time">Now</div>
+    </div>`).join('')
+  : `<div style="padding:1rem;font-size:0.85rem;color:var(--text-muted)">No alerts</div>`;
+}
+function markNotifsRead() {
+  document.getElementById('notifDot').style.display='none';
+  document.getElementById('notifDropdown').style.display='none';
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

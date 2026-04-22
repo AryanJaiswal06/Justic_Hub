@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verify Email — LexBridge</title>
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/loginpage.css" />
+</head>
+<body>
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem">
+  <div class="dash-panel" style="max-width:460px;width:100%;text-align:center">
+    <div class="panel-body" style="padding:2.5rem 2rem">
+
+      <a href="index.html" class="nav-logo" style="display:inline-flex;justify-content:center;margin-bottom:2rem">
+        <div class="logo-icon">⚖</div>Lex<span style="color:var(--gold)">Bridge</span>
+      </a>
+
+      <!-- Verifying state -->
+      <div id="stateVerifying">
+        <div style="font-size:3rem;margin-bottom:1rem">⏳</div>
+        <h2 style="margin-bottom:.5rem">Verifying your email…</h2>
+        <p style="color:var(--text-muted);font-size:.875rem">Please wait a moment.</p>
+      </div>
+
+      <!-- Success state -->
+      <div id="stateSuccess" style="display:none">
+        <div style="font-size:3rem;margin-bottom:1rem">✅</div>
+        <h2 style="margin-bottom:.5rem">Email Verified!</h2>
+        <p style="color:var(--text-muted);font-size:.875rem;margin-bottom:1.5rem">
+          Your LexBridge account is now active. You can sign in and start using the platform.
+        </p>
+        <a href="login.html" class="btn btn-primary btn-lg btn-full">Sign In Now →</a>
+      </div>
+
+      <!-- Error state -->
+      <div id="stateError" style="display:none">
+        <div style="font-size:3rem;margin-bottom:1rem">❌</div>
+        <h2 style="margin-bottom:.5rem">Verification Failed</h2>
+        <p style="color:var(--text-muted);font-size:.875rem;margin-bottom:1.5rem" id="errorMsg">
+          This link is invalid or has expired. Please request a new verification email.
+        </p>
+        <a href="login.html" class="btn btn-outline btn-full">Back to Sign In</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="scripts/db.js"></script>
+<script>
+  (async function verify() {
+    const token = new URLSearchParams(window.location.search).get('token');
+
+    function show(state) {
+      ['Verifying','Success','Error'].forEach(s =>
+        document.getElementById('state'+s).style.display = 'none'
+      );
+      document.getElementById('state'+state).style.display = 'block';
+    }
+
+    if (!token) {
+      show('Error');
+      document.getElementById('errorMsg').textContent = 'No verification token found in the link.';
+      return;
+    }
+
+    try {
+      const res  = await fetch(`/api/auth/verify-email/${token}`);
+      const data = await res.json();
+      if (res.ok) {
+        show('Success');
+      } else {
+        show('Error');
+        document.getElementById('errorMsg').textContent = data.error || 'Verification failed.';
+      }
+    } catch (_) {
+      // No backend — mark locally verified
+      const email = localStorage.getItem('user_email');
+      if (email) {
+        const user = DB.getUser();
+        if (user) { user.email_verified = true; DB.saveUser(user); }
+      }
+      show('Success');
+    }
+  })();
+</script>
+</body>
+</html>

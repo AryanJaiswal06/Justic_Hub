@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Justice Hub — Legal Help Platform</title>
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body>
+
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="index.html" class="nav-logo"><div class="logo-icon">⚖</div>Justice<span>Hub</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#lawyers">Find Lawyers</a></li>
+        <li><a href="#how">How It Works</a></li>
+        <li><a href="#testimonials">Reviews</a></li>
+        <li><a href="#">Practice Areas</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
+        <a href="signup.html" class="btn btn-primary btn-sm">Get Started</a>
+      </div>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-tag animate-fadeInUp">✦ India's Premier Legal Platform</div>
+        <h1 class="animate-fadeInUp delay-1">Your <em>Legal Rights,</em><br>Expert Guidance</h1>
+        <p class="hero-desc animate-fadeInUp delay-2">Connect with verified lawyers, track your cases in real time, and navigate the justice system with confidence — from anywhere in India.</p>
+        <div class="hero-actions animate-fadeInUp delay-3">
+          <a href="signup.html" class="btn btn-primary btn-lg">Find a Lawyer ➜</a>
+          <a href="signup.html?type=lawyer" class="btn btn-outline btn-lg">Join as Lawyer</a>
+        </div>
+        <div class="hero-stats animate-fadeInUp delay-4">
+          <div class="hero-stat"><div class="num" id="statLawyers">0</div><div class="lbl">Verified Lawyers</div></div>
+          <div class="hero-stat"><div class="num" id="statCases">0</div><div class="lbl">Cases Resolved</div></div>
+          <div class="hero-stat"><div class="num">4.8★</div><div class="lbl">Average Rating</div></div>
+        </div>
+      </div>
+      <div class="hero-visual animate-fadeInUp delay-2">
+        <div class="hero-card-stack">
+          <div class="hcard">
+            <div class="hcard-badge">⚖ Active Case</div>
+            <div class="hcard-title">Property Dispute — High Court</div>
+            <div class="hcard-meta">Assigned to your lawyer · Managed on LexBridge</div>
+            <div class="hcard-divider"></div>
+            <div class="hcard-row">Next Hearing <span>Mar 22, 2025</span></div>
+            <div class="hcard-row">Status <span style="color:var(--gold)">In Progress</span></div>
+            <div class="hcard-row">Documents Filed <span>7 / 9</span></div>
+            <div class="hcard-divider"></div>
+            <div style="display:flex;gap:0.5rem">
+              <button class="btn btn-primary btn-sm" style="flex:1">View Case</button>
+              <button class="btn btn-outline btn-sm" style="flex:1">Message</button>
+            </div>
+          </div>
+          <div class="hcard"><div class="hcard-badge">📁 Documents</div><div class="hcard-title">3 New Files Uploaded</div><div class="hcard-meta">Ready for review</div></div>
+          <div class="hcard"><div class="hcard-badge">🔔 Reminder</div><div class="hcard-title">Hearing Tomorrow</div><div class="hcard-meta">10:30 AM — Room 4B</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="search-section">
+    <div class="container">
+      <p class="section-label" style="text-align:center;margin-bottom:1.25rem">Search Our Network</p>
+      <div class="search-bar">
+        <select id="searchSpec">
+          <option value="">All Specializations</option>
+          <option>Criminal Law</option><option>Family Law</option><option>Corporate Law</option>
+          <option>Property Law</option><option>Civil Law</option><option>Labour Law</option><option>Intellectual Property</option>
+        </select>
+        <input type="text" id="searchInput" placeholder="Search by name, city or keyword…" />
+        <button class="btn btn-primary" onclick="performSearch()">Search Lawyers</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="lawyers">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Our Network</span>
+        <h2>Featured <span class="text-gold">Lawyers</span></h2>
+        <p class="section-sub">Verified professionals across all practice areas, ready to take your case.</p>
+      </div>
+      <div class="lawyers-grid" id="lawyersGrid"></div>
+      <div style="text-align:center;margin-top:2.5rem">
+        <a href="signup.html" class="btn btn-outline btn-lg">View All Lawyers →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section how-section" id="how">
+    <div class="container">
+      <div class="section-header text-center">
+        <span class="section-label">Simple Process</span>
+        <h2>How <span class="text-gold">LexBridge</span> Works</h2>
+        <p class="section-sub" style="margin:0.75rem auto 0">From first consultation to case resolution in four easy steps.</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-item animate-fadeInUp delay-1"><div class="step-num">1</div><div class="step-title">Create Account</div><p class="step-desc">Sign up as a client or lawyer in under two minutes. Completely free to join.</p></div>
+        <div class="step-item animate-fadeInUp delay-2"><div class="step-num">2</div><div class="step-title">Find Your Lawyer</div><p class="step-desc">Browse verified lawyers by specialization, location, and client ratings.</p></div>
+        <div class="step-item animate-fadeInUp delay-3"><div class="step-num">3</div><div class="step-title">Submit Your Case</div><p class="step-desc">Upload documents, describe your issue, and request representation instantly.</p></div>
+        <div class="step-item animate-fadeInUp delay-4"><div class="step-num">4</div><div class="step-title">Track &amp; Resolve</div><p class="step-desc">Monitor case progress, message your lawyer, and get real-time updates.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="testimonials">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Client Stories</span>
+        <h2>What Our <span class="text-gold">Clients Say</span></h2>
+      </div>
+      <div class="testimonials-grid" id="testimonialsGrid"></div>
+    </div>
+  </section>
+
+  <section class="cta-band">
+    <div class="container">
+      <span class="section-label">Start Today</span>
+      <h2 style="margin-bottom:0.75rem">Justice Shouldn't Be <span class="text-gold">Out of Reach</span></h2>
+      <p style="color:var(--text-secondary);margin-bottom:2rem;max-width:480px;margin-left:auto;margin-right:auto">Join thousands of clients and lawyers who trust LexBridge for transparent, accessible legal services.</p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+        <a href="signup.html" class="btn btn-primary btn-lg">Get Legal Help Now</a>
+        <a href="signup.html?type=lawyer" class="btn btn-outline btn-lg">Register as Lawyer</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo" style="display:inline-flex"><div class="logo-icon">⚖</div>Lex<span>Bridge</span></a>
+          <p>India's trusted legal help platform connecting clients with verified lawyers for transparent, accessible justice.</p>
+        </div>
+        <div class="footer-col"><h4>Platform</h4><ul><li><a href="#">Find Lawyers</a></li><li><a href="#">Practice Areas</a></li><li><a href="#">Case Tracker</a></li><li><a href="#">Document Vault</a></li></ul></div>
+        <div class="footer-col"><h4>Company</h4><ul><li><a href="#">About Us</a></li><li><a href="#">Careers</a></li><li><a href="#">Blog</a></li><li><a href="#">Contact</a></li></ul></div>
+        <div class="footer-col"><h4>Legal</h4><ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li><li><a href="#">Bar Council</a></li><li><a href="#">Support</a></li></ul></div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2025 LexBridge Legal Technologies Pvt. Ltd.</span>
+        <span>Made with ⚖ for accessible justice in India</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast-container" id="toastContainer"></div>
+  <script src="scripts/db.js"></script>
+  <script src="scripts/main.js"></script>
+  <script>
+  // ── Dynamic stats from real DB ────────────────────────────────────────────
+  (function updateHeroStats() {
+    // Count all registered users
+    let userCount = 0, lawyerCount = 0, caseCount = 0;
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (!key) continue;
+      if (key.startsWith('lb_registered_')) {
+        try {
+          const u = JSON.parse(localStorage.getItem(key));
+          if (u.role === 'lawyer') lawyerCount++; else userCount++;
+        } catch {}
+      }
+      if (key.endsWith('_cases')) {
+        try { caseCount += JSON.parse(localStorage.getItem(key)).filter(c=>c.status==='closed').length; } catch {}
+      }
+    }
+    // Animate counters
+    function animateCount(el, target, suffix='') {
+      if (!el) return;
+      const duration = 1200;
+      const step     = Math.ceil(target / (duration / 30));
+      let   current  = 0;
+      const timer    = setInterval(() => {
+        current = Math.min(current + step, target);
+        el.textContent = current.toLocaleString('en-IN') + suffix;
+        if (current >= target) clearInterval(timer);
+      }, 30);
+    }
+    animateCount(document.getElementById('statLawyers'), lawyerCount);
+    animateCount(document.getElementById('statCases'),   caseCount);
+
+    // ── Search: filter lawyers from registered users ────────────────────────
+    window.performSearch = function() {
+      const spec  = document.getElementById('searchSpec').value.toLowerCase();
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const lawyers = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (!key || !key.startsWith('lb_registered_')) continue;
+        try {
+          const u = JSON.parse(localStorage.getItem(key));
+          if (u.role !== 'lawyer') continue;
+          const lp = JSON.parse(localStorage.getItem(`lb_${u.id}_lawyer_profile`) || 'null');
+          const profile = { ...u, ...(lp||{}) };
+          const matchSpec  = !spec  || (profile.specialization||'').toLowerCase().includes(spec);
+          const matchQuery = !query || (profile.full_name||'').toLowerCase().includes(query)
+            || (profile.city||'').toLowerCase().includes(query)
+            || (profile.specialization||'').toLowerCase().includes(query);
+          if (matchSpec && matchQuery) lawyers.push(profile);
+        } catch {}
+      }
+      const grid = document.getElementById('lawyersGrid');
+      document.getElementById('lawyers').scrollIntoView({behavior:'smooth'});
+      if (!lawyers.length) {
+        grid.innerHTML = `<div style="text-align:center;padding:3rem;color:var(--text-muted);grid-column:1/-1">
+          No lawyers found matching your search. <a href="signup.html?type=lawyer">Register as a lawyer →</a></div>`;
+        return;
+      }
+      grid.innerHTML = lawyers.map(l => renderLawyerCard(l)).join('');
+    };
+
+    function renderLawyerCard(l) {
+      const ini = (l.full_name||'L').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+      return `<div class="lawyer-card">
+        <div class="lawyer-avatar">${ini}</div>
+        <div class="lawyer-name">${esc(l.full_name||'—')}</div>
+        <div class="lawyer-spec">${esc(l.specialization||'Legal Professional')}</div>
+        <div class="lawyer-meta">
+          ${l.city?`<span>📍 ${esc(l.city)}</span>`:''}
+          ${l.experience_years?`<span>⏱ ${esc(l.experience_years)} yrs</span>`:''}
+          ${l.consultation_fee?`<span>💰 ₹${Number(l.consultation_fee).toLocaleString('en-IN')}/hr</span>`:''}
+        </div>
+        <a href="signup.html" class="btn btn-outline btn-sm" style="margin-top:1rem;display:block;text-align:center">Contact Lawyer</a>
+      </div>`;
+    }
+
+    function esc(s='') { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    // ── Load lawyers grid on page load ─────────────────────────────────────
+    const grid = document.getElementById('lawyersGrid');
+    if (grid) {
+      const allLawyers = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (!key || !key.startsWith('lb_registered_')) continue;
+        try {
+          const u = JSON.parse(localStorage.getItem(key));
+          if (u.role !== 'lawyer') continue;
+          const lp = JSON.parse(localStorage.getItem(`lb_${u.id}_lawyer_profile`) || 'null');
+          allLawyers.push({ ...u, ...(lp||{}) });
+        } catch {}
+      }
+      grid.innerHTML = allLawyers.length
+        ? allLawyers.map(l=>renderLawyerCard(l)).join('')
+        : `<div style="text-align:center;padding:3rem;color:var(--text-muted);grid-column:1/-1">
+            No lawyers have registered yet. <a href="signup.html?type=lawyer">Be the first →</a></div>`;
+    }
+  })();
+  </script>
+</body>
+</html>

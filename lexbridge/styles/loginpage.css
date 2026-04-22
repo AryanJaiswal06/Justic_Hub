@@ -1,0 +1,152 @@
+/* ============================================================
+   LexBridge — loginpage.css
+   Auth split-panel layout: visual left + form right
+   Requires main.css for design tokens
+   ============================================================ */
+
+/* ── Page wrapper ─────────────────────────────────────────── */
+.auth-page {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+}
+
+/* ── Left visual panel ────────────────────────────────────── */
+.auth-visual {
+  position: relative;
+  background: var(--bg-card);
+  border-right: 1px solid var(--border);
+  padding: 2.5rem;
+  display: flex; flex-direction: column; justify-content: space-between;
+  overflow: hidden;
+}
+.auth-visual-bg {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 70% at 30% 40%, rgba(201,168,76,.1) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 50% at 80% 80%, rgba(91,155,213,.06) 0%, transparent 60%);
+}
+.auth-visual-content {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; justify-content: center;
+  flex: 1; padding: 3rem 0;
+}
+.auth-visual-quote {
+  font-family: var(--font-heading); font-size: 1.65rem;
+  font-weight: 400; font-style: italic;
+  color: var(--text-primary); line-height: 1.4; margin-bottom: 0.75rem;
+  max-width: 360px;
+}
+.auth-visual-quote span { color: var(--gold); }
+.auth-visual-sub { color: var(--text-muted); font-size: 0.875rem; margin-bottom: 2.5rem; }
+
+.auth-features { list-style: none; display: flex; flex-direction: column; gap: 1rem; }
+.auth-features li {
+  display: flex; align-items: center; gap: 0.85rem;
+  font-size: 0.875rem; color: var(--text-secondary);
+}
+.feat-icon {
+  width: 32px; height: 32px; border-radius: var(--radius-sm);
+  background: var(--gold-dim); border: 1px solid var(--gold-border);
+  display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0;
+}
+.auth-visual-footer {
+  position: relative; z-index: 1;
+  font-size: 0.75rem; color: var(--text-muted);
+}
+
+/* ── Right form panel ─────────────────────────────────────── */
+.auth-form-panel {
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg-dark);
+  padding: 2.5rem;
+  overflow-y: auto;
+}
+.auth-form-wrap {
+  width: 100%; max-width: 440px;
+}
+
+/* ── Form header ──────────────────────────────────────────── */
+.auth-form-header { text-align: center; margin-bottom: 2rem; }
+.auth-logo {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700;
+  margin-bottom: 1.25rem; color: var(--text-primary);
+}
+.auth-form-header h2 { font-size: 1.6rem; margin-bottom: 0.4rem; }
+.auth-form-header p  { color: var(--text-muted); font-size: 0.875rem; }
+
+/* ── Role tabs (login page) ───────────────────────────────── */
+.role-tabs {
+  display: flex; gap: 0.5rem; margin-bottom: 1.5rem;
+  background: var(--bg-elevated); border-radius: var(--radius-md);
+  padding: 0.3rem;
+}
+.role-tab {
+  flex: 1; padding: 0.5rem 0.75rem;
+  background: none; border: none; border-radius: var(--radius-sm);
+  font-family: var(--font-body); font-size: 0.85rem; font-weight: 500;
+  color: var(--text-muted); cursor: pointer;
+  transition: all var(--transition); white-space: nowrap;
+}
+.role-tab:hover  { color: var(--text-primary); }
+.role-tab.active { background: var(--bg-card); color: var(--gold); border: 1px solid var(--gold-border); }
+
+/* ── Signup type tabs ─────────────────────────────────────── */
+.signup-type-tabs {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.5rem;
+}
+.signup-type-tab {
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1rem; text-align: center;
+  cursor: pointer; transition: all var(--transition);
+}
+.signup-type-tab:hover  { border-color: var(--gold-border); }
+.signup-type-tab.active { border-color: var(--gold); background: var(--gold-dim); }
+.tab-icon  { font-size: 1.5rem; margin-bottom: 0.4rem; }
+.tab-label { font-size: 0.82rem; font-weight: 500; color: var(--text-secondary); }
+.signup-type-tab.active .tab-label { color: var(--gold); }
+
+/* ── Form sections (client / lawyer toggle) ───────────────── */
+.form-section { display: none; }
+.form-section.active { display: block; }
+
+/* ── Footer links ─────────────────────────────────────────── */
+.auth-divider {
+  text-align: center; font-size: 0.8rem; color: var(--text-muted);
+  margin: 1.25rem 0; position: relative;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: ''; position: absolute; top: 50%; height: 1px;
+  background: var(--border); width: calc(50% - 4rem);
+}
+.auth-divider::before { left: 0; }
+.auth-divider::after  { right: 0; }
+
+.auth-switch {
+  text-align: center; margin-top: 1.5rem;
+  font-size: 0.875rem; color: var(--text-muted);
+}
+
+.forgot-link { font-size: 0.82rem; color: var(--gold); }
+.forgot-link:hover { color: var(--gold-light); }
+
+.terms-text {
+  font-size: 0.78rem; color: var(--text-muted);
+  margin-bottom: 0.75rem; line-height: 1.6;
+}
+.terms-text a { color: var(--gold); }
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 820px) {
+  .auth-page { grid-template-columns: 1fr; }
+  .auth-visual { display: none; }
+  .auth-form-panel { padding: 1.5rem; min-height: 100vh; }
+}
+@media (max-width: 480px) {
+  .auth-form-wrap { max-width: 100%; }
+  .role-tabs { flex-direction: column; }
+  .signup-type-tabs { grid-template-columns: 1fr; }
+}
